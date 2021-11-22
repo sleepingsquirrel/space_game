@@ -1,0 +1,294 @@
+#include <stdio.h>
+#include <math.h>
+#include <stdint.h>
+#include <stdbool.h>
+#include <time.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+const char *colors[] = {"\033[1;39;49m\0", "\033[1;37;47m\0", "\033[1;37;46m\0", "\033[1;37;45m\0", "\033[1;37;44m\0", "\033[1;37;43m\0", "\033[1;37;42m\0", "\033[1;37;41m\0"};
+
+void draw_map();
+const char *color(int num);
+void gen_map();
+struct satalite;
+struct room;
+struct door;
+struct satalite *sat_gen(int size, int seed);
+struct room *draw_to_map(int x, int y, int w, int h, int data, struct satalite *sat);
+bool check_empty(int x, int y, int w, int h, int data, struct satalite *sat);
+void make_doors(struct room *p);
+void free_sat(struct satalite *sat);
+void free_rooms(struct room *p);
+void free_doors(struct door *p);
+
+struct door
+{
+    struct room *doorp;
+    struct door *next;
+    char direction;
+};
+
+struct room
+{
+    int x, y, w, h, data;
+    struct satalite *parent;
+    struct room *next;
+    struct door *doors;
+    bool seen;
+};
+
+struct satalite
+{
+    uint8_t map[26][50];
+    int sat_size, rooms_num, doors_num;
+    struct room *rooms;
+    struct room *starting_room;
+};
+
+int main(int argc, char *argv[])
+{
+    rewind(stdout);
+    if (argc != 3) // check if we have the right amount of aruments
+    {
+        printf("please have a argument\n");
+        return 0;
+    }
+    printf("Creating satalite\n");
+    struct satalite *sat = sat_gen(atoi(argv[1]), atoi(argv[2]));
+    printf("Printing satalite\n");
+    draw_map(sat);
+    struct room *player_room = sat->starting_room;
+    player_room->seen = true;
+    char input[50];
+    int i;
+    while (true)
+    {
+        printf(">");
+        fgets(input, 50, stdin);
+        printf("\033[2J\033[1;1H");
+        for (i = 0; input[i] != '\n'; input[i] = tolower(input[i]), i++);
+        input[i] = '\0';
+        if (strcmp(input, "door\0") == 0 || strcmp(input, "doors\0") == 0)
+        {
+            for (struct door *current = player_room->doors; current != NULL; current = current->next)
+            {
+                printf("%i %c\n", current->doorp->data, current->direction);
+            }
+        }
+        else if (!strcmp(input, "quit\0"))
+        {
+            break;
+        }
+        else if (!strcmp(input, "map\0"))
+        {
+            draw_map(sat);
+        }
+
+    }
+    printf("Freeing things\n");
+    free_sat(sat);
+    printf("Things have been freed\n");
+}
+
+struct satalite *sat_gen(int size, int seed)
+{
+    srand(seed);
+    struct satalite *sat = malloc(sizeof(struct satalite));
+    sat->rooms = NULL;
+    sat->rooms_num = 0;
+    sat->doors_num = 0;
+    sat->sat_size = size;
+    for (int y = 0; y < 26; y++)
+        for (int x = 0; x < 50; x++)
+        {
+            sat->map[y][x] = 0;
+        }
+    gen_map(sat);
+    for (struct room *current = sat->rooms; current != NULL; current = current->next)
+    {
+        make_doors(current);
+    }
+    return sat;
+}
+
+struct room *room_gen(int x1, int y1, int w1, int h1, int roomNum1, struct satalite *p)
+{
+    struct room *roomp = malloc(sizeof(struct room));
+    roomp->x = x1;
+    roomp->y = y1;
+    roomp->w = w1;
+    roomp->h = h1;
+    roomp->doors = NULL;
+    roomp->seen = false;
+    roomp->data = roomNum1;
+    roomp->parent = p;
+    roomp->next = roomp->parent->rooms;
+    roomp->parent->rooms = roomp;
+    roomp->parent->rooms_num++;
+    return roomp;
+}
+
+void door_gen(struct room *parent, struct room *doorp, char direction)
+{
+    struct door *p = malloc(sizeof(struct door));
+    p->direction = direction;
+    p->doorp = doorp;
+    p->next = parent->doors;
+    parent->doors = p;
+    parent->parent->doors_num++;
+}
+
+void gen_map(struct satalite *sat) //generate satalite
+{
+    //draw center room of the satalite
+    int tempranx = (1 + rand() % 10) / 4 + 2;
+    int temprany = (1 + rand() % 10) / 8 + 2;
+    sat->starting_room = draw_to_map(25 - tempranx / 2, 12 - temprany / 2, tempranx, temprany, 1, sat);
+    for (int size = 1; size < sat->sat_size && sat->rooms_num < sat->sat_size; size++)
+        for (int i = 2; i < size + 2; i++)
+            for (int y = 0; y < 26; y++)
+                for (int x = 0; x < 50; x++)
+                    if (sat->map[y][x] == i - 1 && rand() % 3 == 0)
+                    {
+                        tempranx = (size - i) / 3 + rand() % 5;
+                        temprany = (size - i) / 3 + rand() % 5;
+                        if (sat->map[y + 1][x] == 0)
+                        {
+                            draw_to_map(x - tempranx / 4, y + 1, fmax(tempranx / 2, 1), fmax(temprany, 1), i, sat);
+                        }
+                        if (sat->map[y - 1][x] == 0)
+                        {
+                            draw_to_map(x - tempranx / 4, y - temprany, fmax(tempranx / 2, 1), fmax(temprany, 1), i, sat);
+                        }
+                        if (sat->map[y][x - 1] == 0)
+                        {
+                            draw_to_map(x - tempranx, y - temprany / 4, fmax(tempranx, 1), fmax(temprany / 2, 1), i, sat);
+                        }
+                        if (sat->map[y][x + 1] == 0)
+                        {
+                            draw_to_map(x + 1, y - temprany / 4, fmax(tempranx, 1), fmax(temprany / 2, 1), i, sat);
+                        }
+                        if (sat->rooms_num >= sat->sat_size)
+                        {
+                            return;
+                        }
+                    }
+}
+
+bool check_empty(int x, int y, int w, int h, int data, struct satalite *sat)
+{
+    for (int rx = -1; rx <= w; rx++)
+        for (int ry = -1; ry <= h; ry++)
+            if (!((rx < 0 || ry < 0 || rx == w || ry == h) && sat->map[ry + y][rx + x] == data - 1) && sat->map[ry + y][rx + x] != 0)
+            {
+                return false;
+            }
+    return true;
+}
+
+const char *color(int num)//get color from number
+{
+    return colors[num ? (num + 6) % 7 + 1 : 0];
+}
+
+struct room *draw_to_map(int x, int y, int w, int h, int data, struct satalite *sat)
+{
+    if (x > 0 && y > 0 && x + w < 50 && y + h < 25)
+        if (check_empty(x, y, w, h, data, sat))
+        {
+            for (int rx = 0; rx < w; rx++)
+                for (int ry = 0; ry < h; ry++)
+                {
+                    sat->map[ry + y][rx + x] = data;
+                }
+            return room_gen(x, y, w, h, data, sat);
+        }
+    return NULL;
+}
+
+void draw_map(struct satalite *sat)
+{
+    printf("Rooms: %i\nDoors: %i\n", sat->rooms_num, sat->doors_num);
+    printf("   ");
+    for (int x = 0; x < 50; x++)
+        printf("%s%i%i",(x%2) ? "\033[1;39;49m\0" : "\033[1;39;47m\0", x/10, x%10);
+    printf("\n");
+    for (int y = 0; y < 25; y++)
+    {
+        printf("%i%i ", y/10, y%10);
+        for (int x = 0; x < 50; x++)
+        {
+            printf("%s  ", color((int) sat->map[y][x]));//, (char)(sat->map[y][x] + '0'));
+        }
+        printf("\n");
+    }
+    printf("%s", colors[0]);
+}
+
+struct room *find_room(int x, int y, struct satalite *sat)
+{
+    for (struct room *current = sat->rooms; current != NULL; current = current->next)
+        if (current->x <= x && current->y <= y && current->x + current->w > x && current->y + current->h > y)
+        {
+            return current;
+        }
+    return NULL;
+}
+
+void make_doors(struct room *p)
+{
+    bool isin;
+    struct room *doorp;
+    for (int rx = -1; rx < p->w + 1; rx++)
+        for (int ry = -1; ry < p->h + 1; ry++)
+            if (p->parent->map[p->y + ry][p->x + rx] != p->data && p->parent->map[p->y + ry][p->x + rx] != 0)
+            {
+                isin = false;
+                doorp = find_room(p->x + rx, p->y + ry, p->parent);
+                for (struct door *current = p->doors; current != 0; current = current->next)
+                    if (current->doorp == doorp)
+                    {
+                        isin = true;
+                    }
+                if (abs(rx) == abs(ry) && p->data == 1) {
+                    printf("andnskj %i %i\n", rx+p->x, ry+p->y);
+                }
+                if (!isin && p->data != doorp->data && !(abs(rx) == abs(ry)))
+                {
+                    if (rx == -1 || rx == p->w)
+                        door_gen(p, doorp, (rx == -1) ? 'W' : 'E');
+                    else
+                    {
+                        door_gen(p, doorp, (ry == -1) ? 'N' : 'S');
+                    }
+                }
+            }
+}
+
+void free_sat(struct satalite *sat)
+{
+    free_rooms(sat->rooms);
+    free(sat);
+}
+
+void free_rooms(struct room *p)
+{
+    free_doors(p->doors);
+    if (p->next != NULL)
+    {
+        free_rooms(p->next);
+    }
+    free(p);
+}
+
+void free_doors(struct door *p)
+{
+    if (p == NULL)
+        return;
+    if (p->next != NULL)
+    {
+        free_doors(p->next);
+    }
+    free(p);
+}

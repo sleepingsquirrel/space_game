@@ -3,19 +3,21 @@
 #define HEIGHT 26
 #define WIDTH 50
 
-void draw_map();
-void gen_map();
+
 struct satalite;
 struct room;
 struct door;
 struct satalite *sat_gen(int size, int seed);
 struct room *draw_to_map(int x, int y, int w, int h, int data, struct satalite *sat);
+const char *color(int num);
+void draw_seen_map(struct satalite *sat);
+void draw_map(uint8_t map[HEIGHT][WIDTH]);
+void gen_map();
 bool check_empty(int x, int y, int w, int h, int data, struct satalite *sat);
 void make_doors(struct room *p);
 void free_sat(struct satalite *sat);
 void free_rooms(struct room *p);
 void free_doors(struct door *p);
-const char *color(int num);
 
 struct door
 {

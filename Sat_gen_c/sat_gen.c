@@ -2,13 +2,11 @@
 #include <math.h>
 #include <stdint.h>
 #include <stdbool.h>
-#include <time.h>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
 #include "sat_gen.h"
 
-const char *colors[] = {"\033[1;39;49m\0", "\033[1;37;47m\0", "\033[1;37;46m\0", "\033[1;37;45m\0", "\033[1;37;44m\0", "\033[1;37;43m\0", "\033[1;37;42m\0", "\033[1;37;41m\0"};
 
 struct satalite *sat_gen(int size, int seed)
 {
@@ -106,11 +104,6 @@ bool check_empty(int x, int y, int w, int h, int data, struct satalite *sat)
     return true;
 }
 
-const char *color(int num)//get color from number
-{
-    return colors[num ? (num + 6) % 7 + 1 : 0];
-}
-
 struct room *draw_to_map(int x, int y, int w, int h, int data, struct satalite *sat)
 {
     if (x > 0 && y > 0 && x + w < WIDTH && y + h < HEIGHT)
@@ -126,39 +119,7 @@ struct room *draw_to_map(int x, int y, int w, int h, int data, struct satalite *
     return NULL;
 }
 
-void draw_map(uint8_t map[HEIGHT][WIDTH])
-{
-    printf("   ");
-    for (int x = 0; x < WIDTH; x++)
-        printf("%s%i%i",(x%2) ? "\033[1;39;49m\0" : "\033[1;30;47m\0", x/10, x%10);
-    printf("\n");
-    for (int y = 0; y < HEIGHT; y++)
-    {
-        printf("%i%i ", y/10, y%10);
-        for (int x = 0; x < WIDTH; x++)
-        {
-            printf("%s  ", color((int) map[y][x]));//, (char)(sat->map[y][x] + '0'));
-        }
-        printf("\n");
-    }
-    printf("%s", colors[0]);
-}
 
-void draw_seen_map(struct satalite *sat)
-{
-	uint8_t map[HEIGHT][WIDTH];
-	for (int x = 0; x < WIDTH; x++)
-		for (int y = 0; y < HEIGHT; y++)
-			map[y][x] = 0;
-	for (struct room *current = sat->rooms; current != NULL; current = current->next)
-		if (current->seen)
-			for (int rx = 0; rx < current->w; rx++)
-				for (int ry = 0; ry < current->h; ry++)
-				{
-					map[ry + current->y][rx + current->x] = current->data;
-				}
-	draw_map(map);
-}
 
 struct room *find_room(int x, int y, struct satalite *sat)
 {
@@ -185,10 +146,9 @@ void make_doors(struct room *p)
                     {
                         isin = true;
                     }
-                if (abs(rx) == abs(ry) && p->data == 1) {
-                    printf("andnskj %i %i\n", rx+p->x, ry+p->y);
-                }
-                if (!isin && p->data != doorp->data) //&& !(abs(rx) == abs(ry)))
+                if (p->data == 1)
+                printf("room %p %i %i %i %i\n", p, rx+p->x, ry+p->y, rx, ry);
+                if (!isin && p->data != doorp->data && !((rx+1 == 0 || rx+1 == p->w) && (ry+1 == 0 || ry+1 == p->h)))
                 {
                     if (rx == -1 || rx == p->w)
                         door_gen(p, doorp, (rx == -1) ? 'W' : 'E');

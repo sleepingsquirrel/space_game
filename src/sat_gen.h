@@ -4,11 +4,12 @@
 #define HEIGHT 26
 #define WIDTH 50
 
-
+//struct prototypes
 struct satalite;
 struct room;
 struct door;
 
+//function prototypes
 //functions in sat_gen.c
 struct satalite *sat_gen(int size, int seed);
 struct room *draw_to_map(int x, int y, int w, int h, int data, struct satalite *sat);

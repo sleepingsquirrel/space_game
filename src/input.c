@@ -8,47 +8,56 @@
 void move(struct room **player, struct satalite *sat)
 {
 	struct room *player_room = *player;
+	//gen map and set it to 0
     uint8_t map[HEIGHT][WIDTH];
     for (int x = 0; x < WIDTH; x++)
 		for (int y = 0; y < HEIGHT; y++)
 			map[y][x] = 0;
+	//draw the room the player is in to the map
     for (int rx = 0; rx < player_room->w; rx++)
 		for (int ry = 0; ry < player_room->h; ry++)
 		{
 			map[ry + player_room->y][rx + player_room->x] = player_room->data;
 		}
+	//draw rooms
     for (struct door *current = player_room->doors; current != NULL; current = current->next)
     {
         map[current->y][current->x] = current->doorp->data;
     }
+	//print out map but just the part we have drawn
     int index = 1;
     for (int ry = 0; ry  < player_room->h + 2; ry++)
         {
         for (int rx = 0; rx < player_room->w + 2; rx++)
+			//test if the current position is the data of the players position or 0
             if (map[player_room->y-1 + ry][player_room->x-1 + rx] == player_room->data ||
                 map[player_room->y-1 + ry][player_room->x-1 + rx] == 0)
             {
-               printf("%s  ", color(map[player_room->y-1 + ry][player_room->x-1 + rx]));
+				//print color without index
+            	printf("%s  ", color(map[player_room->y-1 + ry][player_room->x-1 + rx]));
             }
             else
             {
+				//generate index
                 for (struct door *current = player_room->doors; current != NULL; current = current->next, index++)
                     if (current->x == player_room->x-1 + rx && current->y == player_room->y-1 + ry)
                     {
                         break;
                     }
+				//print color with index
                 printf("%s%i ", color(map[player_room->y-1 + ry][player_room->x-1 + rx]), index);
-                index = 1;
+				//reset index
+				index = 1;
             }
         printf("\n");
         }
+	//get input
 	printf("\nmove to>");
 	char input[3];
 	int inp = 0;
 	fgets(input, 3, stdin);
-	int length = 0;
-	for (; isdigit(input[length]) && length <= 2; length++);
-	if (length > 0)
+	//convert input into integer
+	if (isdigit(input[0]))
 	{
 		inp += input[0] - '0';
 		if (isdigit(input[1]))
@@ -59,19 +68,25 @@ void move(struct room **player, struct satalite *sat)
 	}
 	else
 	{
+		//if it start is not int return
 		printf("no valid door selected\n");
 		return;
 	}
+	//get the specified room
 	struct door *current = player_room->doors;
 	for (int i = 0; current != NULL && i+1 < inp; current = current->next, i++);
+	//prevent segmentation fault
 	if (current == NULL)
 	{
 		printf("no valid door selected\n");
-		getchar();
 		return;
 	}
+	//update player pos
 	(*player) = current->doorp;
+	//see room
 	(*player)->seen = true;
+	//TODO: add random encounters
+	
 	printf("moved suceccfully\n");
 }
 

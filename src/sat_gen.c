@@ -148,8 +148,6 @@ void make_doors(struct room *p)
                     {
                         isin = true;
                     }
-                if (p->data == 1)
-                printf("room %p %i %i %i %i\n", p, rx+p->x, ry+p->y, rx, ry);
                 if (!isin && p->data != doorp->data && !((rx+1 == 0 || rx == p->w) && (ry+1 == 0 || ry == p->h)))
                 {
                     if (rx == -1 || rx == p->w)

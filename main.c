@@ -46,13 +46,7 @@ int main(int argc, char *argv[])
 			case 3://move
 				move(&player_room, sat);
 				break;
-			case 4: //print doors of current room
-				for (struct door *current = player_room->doors; current != NULL; current = current->next)
-				{
-					printf("%p %i %c\n", current, current->doorp->data, current->direction);
-				}
-				break;
-			case 5://devmap
+			case 4://devmap
 				draw_map(sat->map);
 				break;
 		}

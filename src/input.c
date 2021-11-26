@@ -45,9 +45,9 @@ void move(struct room **player, struct satalite *sat)
 	printf("\nmove to>");
 	char input[3];
 	int inp = 0;
-	fgets(input, 2, stdin);
+	fgets(input, 3, stdin);
 	int length = 0;
-	for (; isdigit(input[length]) && length < 2; length++);
+	for (; isdigit(input[length]) && length <= 2; length++);
 	if (length > 0)
 	{
 		inp += input[0] - '0';
@@ -64,12 +64,15 @@ void move(struct room **player, struct satalite *sat)
 	}
 	struct door *current = player_room->doors;
 	for (int i = 0; current != NULL && i+1 < inp; current = current->next, i++);
-	printf("%i %p\n", inp, current);
+	if (current == NULL)
+	{
+		printf("no valid door selected\n");
+		getchar();
+		return;
+	}
 	(*player) = current->doorp;
 	(*player)->seen = true;
 	printf("moved suceccfully\n");
-	getchar();
-
 }
 
 int get_command()
@@ -87,13 +90,12 @@ int get_command()
 	input[i] = '\0';
 
 	//num stores nuber of aliases of each command
-	int num[] = {4, 2, 3, 2, 1};
+	int num[] = {4, 2, 3, 1};
 	//strings stores each command
 	char *strings[] = {
 		"quit", "q", "close", "stop",
-		"map", "draw",
+		"map", "draw", "mp",
 		"move", "m", "mv",
-		"door", "doors",
 		"devmap"
 	};
 	int numpos = 0;
@@ -109,7 +111,6 @@ int get_command()
 
 		if (!strcmp(input, strings[i]))
 		{
-			printf("%s %i\n", strings[i], numpos);
 			return numpos + 1;
 		}
 	}

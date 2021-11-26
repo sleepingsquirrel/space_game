@@ -4,6 +4,7 @@
 #include <string.h>
 #include <time.h>
 
+#include "sat_gen.h"
 
 int digcheck(char* input)
 {
@@ -11,7 +12,7 @@ int digcheck(char* input)
     //Returns 0 on fail
     for (int i = 0; i < strlen(input); i++)
     {
-        if (input[i] < '0' || input[i] > '9')
+        if (input[i] < '0' || input[i] > '9')u
         {
             return 0;
         }
@@ -22,13 +23,13 @@ int digcheck(char* input)
 //Max Health
 //Max Energy
 //Max Ogygen
-class chip{
-    public:
-        int stats[4] = {0, 0, 0, 0};
+typedef struct
+{
+    int stats[4];
+} chip;
 
-};
 int main(int argc, char* argv[]){
-    chip genchip;
+    chip genchip = {0,0,0,0};
     //Arg is Chip Level
     if (argc != 2 || digcheck(argv[1]) == 0)
     {

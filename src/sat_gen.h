@@ -13,7 +13,7 @@ struct door;
 struct satalite *sat_gen(int size, int seed);
 struct room *draw_to_map(int x, int y, int w, int h, int data, struct satalite *sat);
 void gen_map();
-void door_gen(struct room *parent, struct room *doorp, char direction, int x, int y, int index);
+void door_gen(struct room *parent, struct room *doorp, char direction, int x, int y);
 struct room *room_gen(int x1, int y1, int w1, int h1, int roomNum1, struct satalite *p);
 bool check_empty(int x, int y, int w, int h, int data, struct satalite *sat);
 void make_doors(struct room *p);
@@ -32,11 +32,11 @@ void see_room(struct room *rm);
 
 //functions in input.c
 int get_command();
-void move(struct room *player_room, struct satalite *sat);
+void move(struct room **player_room, struct satalite *sat);
 
 struct door
 {
-    int x, y, index;
+    int x, y;
     struct room *doorp;
     struct door *next;
     char direction;

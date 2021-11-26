@@ -46,14 +46,13 @@ struct room *room_gen(int x1, int y1, int w1, int h1, int roomNum1, struct satal
     return roomp;
 }
 
-void door_gen(struct room *parent, struct room *doorp, char direction, int x, int y, int index)
+void door_gen(struct room *parent, struct room *doorp, char direction, int x, int y)
 {
     struct door *p = malloc(sizeof(struct door));
     p->direction = direction;
     p->doorp = doorp;
     p->x = x;
     p->y = y;
-    p->index = index;
     p->next = parent->doors;
     parent->doors = p;
     parent->parent->doors_num++;
@@ -136,7 +135,6 @@ struct room *find_room(int x, int y, struct satalite *sat)
 
 void make_doors(struct room *p)
 {
-    int index = 1;
     bool isin;
     struct room *doorp;
     for (int rx = -1; rx < p->w + 1; rx++)
@@ -155,12 +153,11 @@ void make_doors(struct room *p)
                 if (!isin && p->data != doorp->data && !((rx+1 == 0 || rx == p->w) && (ry+1 == 0 || ry == p->h)))
                 {
                     if (rx == -1 || rx == p->w)
-                        door_gen(p, doorp, (rx == -1) ? 'W' : 'E', rx+p->x, ry+p->y, index);
+                        door_gen(p, doorp, (rx == -1) ? 'W' : 'E', rx+p->x, ry+p->y);
                     else
                     {
-                        door_gen(p, doorp, (ry == -1) ? 'N' : 'S', rx+p->x, ry+p->y, index);
+                        door_gen(p, doorp, (ry == -1) ? 'N' : 'S', rx+p->x, ry+p->y);
                     }
-                    index++;
                 }
             }
 }

@@ -5,16 +5,13 @@
 #include "sat_gen.h"
 
 
-void move(struct room *player_room, struct satalite *sat)
+void move(struct room **player, struct satalite *sat)
 {
+	struct room *player_room = *player;
     uint8_t map[HEIGHT][WIDTH];
     for (int x = 0; x < WIDTH; x++)
 		for (int y = 0; y < HEIGHT; y++)
 			map[y][x] = 0;
-    int minx = player_room->x-1;
-    int miny = player_room->y-1;
-    int maxx = player_room->x + player_room->w+1;
-    int maxy = player_room->y + player_room->h+1;
     for (int rx = 0; rx < player_room->w; rx++)
 		for (int ry = 0; ry < player_room->h; ry++)
 		{
@@ -45,6 +42,34 @@ void move(struct room *player_room, struct satalite *sat)
             }
         printf("\n");
         }
+	printf("\nmove to>");
+	char input[3];
+	int inp = 0;
+	fgets(input, 2, stdin);
+	int length = 0;
+	for (; isdigit(input[length]) && length < 2; length++);
+	if (length > 0)
+	{
+		inp += input[0] - '0';
+		if (isdigit(input[1]))
+		{
+			inp *= 10;
+			inp += input[1] - '0';
+		}
+	}
+	else
+	{
+		printf("no valid door selected\n");
+		return;
+	}
+	struct door *current = player_room->doors;
+	for (int i = 0; current != NULL && i+1 < inp; current = current->next, i++);
+	printf("%i %p\n", inp, current);
+	(*player) = current->doorp;
+	(*player)->seen = true;
+	printf("moved suceccfully\n");
+	getchar();
+
 }
 
 int get_command()

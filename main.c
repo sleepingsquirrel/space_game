@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
 				draw_seen_map(sat);
 				break;
 			case 3://move
-				move(player_room, sat);
+				move(&player_room, sat);
 				break;
 			case 4: //print doors of current room
 				for (struct door *current = player_room->doors; current != NULL; current = current->next)

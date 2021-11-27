@@ -86,7 +86,7 @@ void move(struct room **player, struct satalite *sat)
 	//see room
 	(*player)->seen = true;
 	//TODO: add random encounters
-	
+
 	printf("moved suceccfully\n");
 }
 
@@ -105,7 +105,7 @@ int get_command()
 	input[i] = '\0';
 
 	//num stores nuber of aliases of each command
-	int num[] = {4, 2, 3, 1};
+	int num[] = {4, 3, 3, 1};
 	//strings stores each command
 	char *strings[] = {
 		"quit", "q", "close", "stop",

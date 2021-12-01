@@ -2,8 +2,6 @@ To Do:
 Everything
 
 Current Priorities:
-name
-Satellite Generation
-Combat + Brainstorm
 cards
+Combat + Brainstorm
 chips

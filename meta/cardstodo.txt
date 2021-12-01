@@ -1,0 +1,2 @@
+load list of cards from text document
+use function pointers to have specal cards

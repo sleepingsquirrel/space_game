@@ -29,7 +29,7 @@ void draw_map(uint8_t map[HEIGHT][WIDTH])
     printf("%s", colors[0]);
 }
 
-void draw_seen_map(struct satalite *sat)
+void draw_seen_map(satalite *sat)
 {
 	//gen map
 	uint8_t map[HEIGHT][WIDTH];
@@ -37,7 +37,7 @@ void draw_seen_map(struct satalite *sat)
 		for (int y = 0; y < HEIGHT; y++)
 			map[y][x] = 0;
 	//draw seen rooms to it
-	for (struct room *current = sat->rooms; current != NULL; current = current->next)
+	for (room *current = sat->rooms; current != NULL; current = current->next)
 		if (current->seen)
 			for (int rx = 0; rx < current->w; rx++)
 				for (int ry = 0; ry < current->h; ry++)

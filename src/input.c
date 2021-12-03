@@ -4,10 +4,9 @@
 
 #include "sat_gen.h"
 
-
-void move(struct room **player, struct satalite *sat)
+void move(room **player, satalite *sat)
 {
-	struct room *player_room = *player;
+	room *player_room = *player;
 	//gen map and set it to 0
     uint8_t map[HEIGHT][WIDTH];
     for (int x = 0; x < WIDTH; x++)
@@ -20,7 +19,7 @@ void move(struct room **player, struct satalite *sat)
 			map[ry + player_room->y][rx + player_room->x] = player_room->data;
 		}
 	//draw rooms
-    for (struct door *current = player_room->doors; current != NULL; current = current->next)
+    for (door *current = player_room->doors; current != NULL; current = current->next)
     {
         map[current->y][current->x] = current->doorp->data;
     }
@@ -39,7 +38,7 @@ void move(struct room **player, struct satalite *sat)
             else
             {
 				//generate index
-                for (struct door *current = player_room->doors; current != NULL; current = current->next, index++)
+                for (door *current = player_room->doors; current != NULL; current = current->next, index++)
                     if (current->x == player_room->x-1 + rx && current->y == player_room->y-1 + ry)
                     {
                         break;
@@ -73,7 +72,7 @@ void move(struct room **player, struct satalite *sat)
 		return;
 	}
 	//get the specified room
-	struct door *current = player_room->doors;
+	door *current = player_room->doors;
 	for (int i = 0; current != NULL && i+1 < inp; current = current->next, i++);
 	//prevent segmentation fault
 	if (current == NULL)

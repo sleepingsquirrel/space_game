@@ -5,15 +5,16 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+
 #include "sat_gen.h"
 
 
-struct satalite *sat_gen(int size, int seed)
+satalite *sat_gen(int size, int seed)
 {
 	//set seed
     srand(seed);
 	//alloc sat
-    struct satalite *sat = malloc(sizeof(struct satalite));
+    satalite *sat = malloc(sizeof(satalite));
 	//write attrubutes
     sat->rooms = NULL;
     sat->rooms_num = 0;
@@ -27,17 +28,17 @@ struct satalite *sat_gen(int size, int seed)
 	//generate map and rooms
     gen_map(sat);
 	//gererate doors
-    for (struct room *current = sat->rooms; current != NULL; current = current->next)
+    for (room *current = sat->rooms; current != NULL; current = current->next)
     {
         make_doors(current);
     }
     return sat;
 }
 
-struct room *room_gen(int x1, int y1, int w1, int h1, int roomNum1, struct satalite *p)
+room *room_gen(int x1, int y1, int w1, int h1, int roomNum1, satalite *p)
 {
 	//alloc room
-    struct room *roomp = malloc(sizeof(struct room));
+    room *roomp = malloc(sizeof(room));
 	//write attrubutes
     roomp->x = x1;
     roomp->y = y1;
@@ -54,10 +55,10 @@ struct room *room_gen(int x1, int y1, int w1, int h1, int roomNum1, struct satal
     return roomp;
 }
 
-void door_gen(struct room *parent, struct room *doorp, char direction, int x, int y)
+void door_gen(room *parent, room *doorp, char direction, int x, int y)
 {
 	//alloc door
-    struct door *p = malloc(sizeof(struct door));
+    door *p = malloc(sizeof(door));
 	//write attrubutes
     p->direction = direction;
     p->doorp = doorp;
@@ -69,7 +70,7 @@ void door_gen(struct room *parent, struct room *doorp, char direction, int x, in
     parent->parent->doors_num++;
 }
 
-void gen_map(struct satalite *sat) //generate satalite
+void gen_map(satalite *sat) //generate satalite
 {
     int tempranx = (1 + rand() % 10) / 4 + 2;
     int temprany = (1 + rand() % 10) / 8 + 2;
@@ -110,7 +111,7 @@ void gen_map(struct satalite *sat) //generate satalite
                     }
 }
 
-bool check_empty(int x, int y, int w, int h, int data, struct satalite *sat)
+bool check_empty(int x, int y, int w, int h, int data, satalite *sat)
 {
 	//for each point within rect make shure it is either 0 or data - 1
     for (int rx = -1; rx <= w; rx++)
@@ -122,7 +123,7 @@ bool check_empty(int x, int y, int w, int h, int data, struct satalite *sat)
     return true;
 }
 
-struct room *draw_to_map(int x, int y, int w, int h, int data, struct satalite *sat)
+room *draw_to_map(int x, int y, int w, int h, int data, satalite *sat)
 {
 	//make shure rect is within map
     if (x > 0 && y > 0 && x + w < WIDTH && y + h < HEIGHT)
@@ -143,10 +144,10 @@ struct room *draw_to_map(int x, int y, int w, int h, int data, struct satalite *
 
 
 
-struct room *find_room(int x, int y, struct satalite *sat)
+room *find_room(int x, int y, satalite *sat)
 {
 	//for each room
-    for (struct room *current = sat->rooms; current != NULL; current = current->next)
+    for (room *current = sat->rooms; current != NULL; current = current->next)
 		//check if the point is inside
         if (current->x <= x && current->y <= y && current->x + current->w > x && current->y + current->h > y)
         {
@@ -155,10 +156,10 @@ struct room *find_room(int x, int y, struct satalite *sat)
     return NULL;
 }
 
-void make_doors(struct room *p)
+void make_doors(room *p)
 {
     bool isin;
-    struct room *doorp;
+    room *doorp;
 	//loop around rect
     for (int rx = -1; rx < p->w + 1; rx++)
         for (int ry = -1; ry < p->h + 1; ry++)
@@ -167,7 +168,7 @@ void make_doors(struct room *p)
 				//make shure door not in linked list already
                 isin = false;
                 doorp = find_room(p->x + rx, p->y + ry, p->parent);
-                for (struct door *current = p->doors; current != 0; current = current->next)
+                for (door *current = p->doors; current != NULL; current = current->next)
                     if (current->doorp == doorp)
                     {
                         isin = true;
@@ -177,7 +178,9 @@ void make_doors(struct room *p)
                 {
 					//add door with dirrection
                     if (rx == -1 || rx == p->w)
-                        door_gen(p, doorp, (rx == -1) ? 'W' : 'E', rx+p->x, ry+p->y);
+					{
+						door_gen(p, doorp, (rx == -1) ? 'W' : 'E', rx+p->x, ry+p->y);
+					}
                     else
                     {
                         door_gen(p, doorp, (ry == -1) ? 'N' : 'S', rx+p->x, ry+p->y);
@@ -186,14 +189,19 @@ void make_doors(struct room *p)
             }
 }
 
-void free_sat(struct satalite *sat)
+void gen_specal_rooms(satalite *sat)
+{
+	for (room *current = sat->rooms; current != NULL; current = current->next);
+}
+
+void free_sat(satalite *sat)
 {
 	//recusivly free rooms
     free_rooms(sat->rooms);
     free(sat);
 }
 
-void free_rooms(struct room *p)
+void free_rooms(room *p)
 {
 	//recusivly free doors
     free_doors(p->doors);
@@ -206,7 +214,7 @@ void free_rooms(struct room *p)
     free(p);
 }
 
-void free_doors(struct door *p)
+void free_doors(door *p)
 {
 	//stp segmentation falut
     if (p == NULL)

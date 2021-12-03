@@ -2,7 +2,6 @@
 #include <string.h>
 #include <stdbool.h>
 #include <stdlib.h>
-#include <stdarg.h>
 #include <ctype.h>
 #include <math.h>
 #include <time.h>
@@ -10,7 +9,7 @@
 
 #include "src/sat_gen.h"
 
-struct satalite *sat;
+struct _player player;
 
 int main(int argc, char *argv[])
 {
@@ -22,12 +21,13 @@ int main(int argc, char *argv[])
     signal(SIGINT, INThandler);
     //clear screen
 	printf("\033[2J\033[1;1H");
+	player.gold = 0;
     printf("Creating satalite\n");
-    sat = sat_gen(atoi(argv[1]), time(0));
+	player.sat = sat_gen(atoi(argv[1]), time(0));
     //set the room that the player is in to the starting room
-    struct room *player_room = sat->starting_room;
+    player.room = player.sat->starting_room;
     //make that room visable
-   	player_room->seen = true;
+   	player.room->seen = true;
 
     int i;
     bool running = true;
@@ -41,19 +41,19 @@ int main(int argc, char *argv[])
 				running = false;
 				break;
 			case 2://map
-				draw_seen_map(sat);
+				draw_seen_map(player.sat);
 				break;
 			case 3://move
-				move(&player_room, sat);
+				move(&player.room, player.sat);
 				break;
 			case 4://devmap
-				draw_map(sat->map);
+				draw_map(player.sat->map);
 				break;
 		}
     }
     //free things when done
     printf("Freeing things\n");
-    free_sat(sat);
+    free_sat(player.sat);
     printf("Things have been freed\n");
 }
 
@@ -63,7 +63,7 @@ void INThandler(int sig)
 	signal(sig, SIG_IGN);
     //free things when done
     printf("\nFreeing things\n");
-    free_sat(sat);
+    free_sat(player.sat);
     printf("Things have been freed\n");
     exit(0);
 }

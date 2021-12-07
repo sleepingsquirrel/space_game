@@ -7,7 +7,7 @@
 #include <time.h>
 #include <signal.h>
 
-#include "src/sat_gen.h"
+#include "src/main.h"
 
 struct _player player;
 

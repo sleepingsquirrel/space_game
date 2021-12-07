@@ -2,7 +2,7 @@
 #include <string.h>
 #include <ctype.h>
 
-#include "sat_gen.h"
+#include "main.h"
 
 void move(room **player, satalite *sat)
 {

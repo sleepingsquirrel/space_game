@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-#include "sat_gen.h"
+#include "main.h"
 //array of colors
 const char *colors[] = {"\033[1;39;49m\0", "\033[1;30;47m\0", "\033[1;30;46m\0", "\033[1;30;45m\0", "\033[1;30;44m\0", "\033[1;30;43m\0", "\033[1;30;42m\0", "\033[1;30;41m\0"};
 

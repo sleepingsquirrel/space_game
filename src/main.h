@@ -3,6 +3,8 @@
 
 #define HEIGHT 26
 #define WIDTH 50
+#define EFFECT_COUNT 2
+#define MAX_CARDS 6
 
 //struct prototypes
 struct satalite;
@@ -34,6 +36,26 @@ typedef struct satalite
     struct room *starting_room;
 } satalite;
 
+//card struct
+typedef struct _Card
+{
+    //Card name
+    char *name;
+    //Cost in oxygen, energy, health
+    int cost_o;
+    int cost_e;
+    int cost_h;
+    //amount of targets
+    int targets;
+    //damage in oxygen, energy, health
+    int dam_o;
+    int dam_e;
+    int dam_h;
+    //list of which effects this card does and does not have
+    bool effects[EFFECT_COUNT];
+    struct _Card *next;
+} Card;
+
 //player struct
 struct _player
 {
@@ -48,10 +70,13 @@ struct _player
 	unsigned int maxEnergy;
 	unsigned int speed;
 	//inventory
+	Card *draw;
+	Card *discard;
 };
+
 //function prototypes
 //functions in sat_gen.c
-satalite *sat_gen(int size, int seed);
+satalite *sat_gen(int level, int seed);
 room *draw_to_map(int x, int y, int w, int h, int data, satalite *sat);
 void gen_map();
 void door_gen(room *parent, room *doorp, char direction, int x, int y);
@@ -73,3 +98,11 @@ void INThandler(int sig);
 //functions in input.c
 int get_command();
 void move(room **player_room, satalite *sat);
+
+//functions in cards.c
+const char *name_of_var_for_print_f[] = {"cost_o", "cost_e", "cost_h", "targets", "dam_o", "dam_e", "dam_h"};
+Card *loadcards(const char *filename);
+void free_card(Card *next);
+
+//functions in combat.c
+void shuffle(Card *deck)

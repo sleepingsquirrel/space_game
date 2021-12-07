@@ -6,10 +6,10 @@
 #include <string.h>
 #include <ctype.h>
 
-#include "sat_gen.h"
+#include "main.h"
 
 
-satalite *sat_gen(int size, int seed)
+satalite *sat_gen(int level, int seed)
 {
 	//set seed
     srand(seed);

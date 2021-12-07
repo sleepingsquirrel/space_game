@@ -125,12 +125,11 @@ void INThandler(int sig);
 //functions in input.c
 int get_command();
 void move(room **player_room, satalite *sat);
-<<<<<<< HEAD:src/sat_gen.h
 void search(_player *player);
 //funcions in cards.c
 Card *loadcards(const char *filename);
 void free_card(Card *next);
-=======
+
 
 //functions in cards.c
 const char *name_of_var_for_print_f[] = {"cost_o", "cost_e", "cost_h", "targets", "dam_o", "dam_e", "dam_h"};
@@ -139,4 +138,3 @@ void free_card(Card *next);
 
 //functions in combat.c
 void shuffle(Card *deck)
->>>>>>> 4cb50f9a2de4f2e53e38c6df11dd73907af84444:src/main.h

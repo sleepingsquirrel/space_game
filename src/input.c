@@ -104,13 +104,15 @@ int get_command()
 	input[i] = '\0';
 
 	//num stores nuber of aliases of each command
-	int num[] = {4, 3, 3, 1};
+	int num[] = {2, 4, 3, 3, 1, 5};
 	//strings stores each command
 	char *strings[] = {
+		"help", "h",
 		"quit", "q", "close", "stop",
 		"map", "draw", "mp",
 		"move", "m", "mv",
-		"devmap"
+		"devmap",
+		"search", "s", "see", "inspect", "room"
 	};
 	int numpos = 0;
 	i = 0;
@@ -122,11 +124,16 @@ int get_command()
 			numpos++;
 			curr = 0;
 		}
-
 		if (!strcmp(input, strings[i]))
 		{
-			return numpos + 1;
+			return numpos;
 		}
 	}
-	return 0;
+	printf("invalid command\n");
+	return -1;
+}
+
+void search(_player *player)
+{
+	printf("%s\n", player->player_room->room_type->name);
 }

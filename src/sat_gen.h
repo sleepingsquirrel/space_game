@@ -9,6 +9,14 @@ struct satalite;
 struct room;
 struct door;
 
+typedef struct room_type
+{
+	char **descriptions;
+	char *name;
+	char id;
+	//add room specifec loot and stuff
+} room_type;
+
 typedef struct door
 {
     int x, y;
@@ -23,7 +31,8 @@ typedef struct room
     struct satalite *parent;
     struct room *next;
     struct door *doors;
-    bool seen;
+	room_type type;
+	bool seen;
 } room;
 
 typedef struct satalite
@@ -35,7 +44,7 @@ typedef struct satalite
 } satalite;
 
 //player struct
-struct _player
+typedef struct _player
 {
 	satalite *sat;
 	room *room;
@@ -48,7 +57,29 @@ struct _player
 	unsigned int maxEnergy;
 	unsigned int speed;
 	//inventory
-};
+} _player;
+
+#define EFFECT_COUNT 2
+#define MAX_CARDS 6
+
+typedef struct _Card {
+    //Card name
+    char *name;
+    //Cost in oxygen, energy, health
+    int cost_o;
+    int cost_e;
+    int cost_h;
+    //amount of targets
+    int targets;
+    //damage in oxygen, energy, health
+    int dam_o;
+    int dam_e;
+    int dam_h;
+    //list of which effects this card does and does not have
+    bool effects[EFFECT_COUNT];
+    struct _Card *next;
+} Card;
+
 //function prototypes
 //functions in sat_gen.c
 satalite *sat_gen(int size, int seed);
@@ -73,3 +104,7 @@ void INThandler(int sig);
 //functions in input.c
 int get_command();
 void move(room **player_room, satalite *sat);
+void search(_player *player);
+//funcions in cards.c
+Card *loadcards(const char *filename);
+void free_card(Card *next);

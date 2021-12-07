@@ -2,7 +2,6 @@ To Do:
 Everything
 
 Current Priorities:
-<<<<<<< HEAD
 room types
 room loot
 loot
@@ -12,8 +11,3 @@ name
 Combat + Brainstorm
 cards
 chips
-=======
-cards
-Combat + Brainstorm
-chips
->>>>>>> 47db7a7bf7f85693f3d404effc04251631a3f90f

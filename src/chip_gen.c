@@ -4,7 +4,7 @@
 #include <string.h>
 #include <time.h>
 
-#include "sat_gen.h"
+#include "main.h"
 
 int digcheck(char* input)
 {

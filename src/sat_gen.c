@@ -7,7 +7,8 @@
 #include <ctype.h>
 
 #include "main.h"
-
+//                      'murica   europe    south america    russia(PSMLSMSSR)                                                          aliens
+const char *factions[] = {"USGA", "UN", "U.S.F L.A.F", "Pepoles states of marxest-lenninst-stalinest-maoist soviet socalist republics", "unknown"};
 
 satalite *sat_gen(int level, int seed)
 {
@@ -16,10 +17,13 @@ satalite *sat_gen(int level, int seed)
 	//alloc sat
     satalite *sat = malloc(sizeof(satalite));
 	//write attrubutes
+
+    // 	sat->faction =
     sat->rooms = NULL;
     sat->rooms_num = 0;
     sat->doors_num = 0;
-    sat->sat_size = size;
+    sat->sat_size = 5 + fmax(0, level * 5 + rand() % 7 - 5);
+    printf("%i\n", sat->sat_size);
     for (int y = 0; y < HEIGHT; y++)
         for (int x = 0; x < WIDTH; x++)
         {

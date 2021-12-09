@@ -1,0 +1,4 @@
+Card:
+{name};{cost_o};{cost_e};{cost_h};{targets};{dam_o};{dam_e};{dam_h};{effects[EFFECT_COUNT] >> 0(false) or 1(true)};
+room_types:
+{name};{id};{description (, , , , , ,)};

@@ -13,22 +13,25 @@ struct _player *player;
 
 int main(int argc, char *argv[])
 {
-    if (argc != 2) // check if we have the right amount of aruments
-    {
-        printf("please have a argument\n");
-        return 0;
-    }
+    player = malloc(sizeof(_player));
     signal(SIGINT, INThandler);
     //clear screen
 	printf("\033[2J\033[1;1H");
 	player->gold = 0;
     printf("Creating satalite\n");
-	player->sat = sat_gen(atoi(argv[1]), time(0));
+	player->sat = sat_gen(fmax(atoi(argv[1] ? argv[1] : "0"), 1), time(0));
     //set the room that the player is in to the starting room
     player->room = player->sat->starting_room;
     //make that room visable
    	player->room->seen = true;
-
+	for (int i = 1; i <= 30; i++)
+	{
+		free(player->sat);
+		player->sat = sat_gen(i, time(0));
+		printf("\n%i %i\n", i, player->sat->rooms_num);
+		draw_map(player->sat->map);
+	}
+	return 1;
     int i;
     bool running = true;
     while (running)
@@ -52,12 +55,15 @@ int main(int argc, char *argv[])
 			case 5://search
 				search(player);
 				break;
+			case 6:
+			    free(player->sat);
+			    player->sat = sat_gen(fmax(atoi(argv[1] ? argv[1] : "0"), 1), time(0));
+			    printf("%i\n", player->sat->rooms_num);
+			    draw_map(player->sat->map);
+			    break;
 		}
     }
-    //free things when done
-    printf("Freeing things\n");
-    free_sat(player.sat);
-    printf("Things have been freed\n");
+    Kill();
 }
 
 void INThandler(int sig)
@@ -65,8 +71,14 @@ void INThandler(int sig)
 	//catch ctrl-c
 	signal(sig, SIG_IGN);
     //free things when done
+    Kill();
+}
+
+void Kill()
+{
     printf("\nFreeing things\n");
-    free_sat(player.sat);
+    free_sat(player->sat);
+    free(player);
     printf("Things have been freed\n");
     exit(0);
 }

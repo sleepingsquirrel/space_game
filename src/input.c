@@ -89,6 +89,7 @@ void move(room **player, satalite *sat)
 	printf("moved suceccfully\n");
 }
 
+int last_command = 0;
 int get_command()
 {
     char input[51];
@@ -102,9 +103,12 @@ int get_command()
 	for (i = 0; input[i] != '\n'; input[i] = tolower(input[i]), i++);
 	//end the string
 	input[i] = '\0';
-
+	if (input[0] == '\t')
+	{
+		return last_command;
+	}
 	//num stores nuber of aliases of each command
-	int num[] = {2, 4, 3, 3, 1, 5};
+	int num[] = {2, 4, 3, 3, 1, 5, 2};
 	//strings stores each command
 	char *strings[] = {
 		"help", "h",
@@ -112,7 +116,8 @@ int get_command()
 		"map", "draw", "mp",
 		"move", "m", "mv",
 		"devmap",
-		"search", "s", "see", "inspect", "room"
+		"search", "s", "see", "inspect", "room",
+		"new", "n"
 	};
 	int numpos = 0;
 	i = 0;
@@ -126,6 +131,7 @@ int get_command()
 		}
 		if (!strcmp(input, strings[i]))
 		{
+			last_command = numpos;
 			return numpos;
 		}
 	}
@@ -135,5 +141,5 @@ int get_command()
 
 void search(_player *player)
 {
-	printf("%s\n", player->player_room->room_type->name);
+	printf("%s\n", player->room->type->name);
 }

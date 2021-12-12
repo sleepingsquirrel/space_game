@@ -8,17 +8,29 @@
 
 #include "main.h"
 //                      'murica   europe    south america    russia(PSMLSMSSR)                                                          aliens
-const char *factions[] = {"USGA", "UN", "U.S.F L.A.F", "Pepoles states of marxest-lenninst-stalinest-maoist soviet socalist republics", "unknown"};
+const char *factions[] = {"USGA", "UN", "U.S.F. L.A.F.", "Pepoles states of marxest-lenninst-stalinest-maoist soviet socalist republics", "unknown"};
 
-satalite *sat_gen(int level, int seed)
+satalite *sat_gen(int level, int seed, room_type *room_types)
 {
 	//set seed
     srand(seed);
 	//alloc sat
     satalite *sat = malloc(sizeof(satalite));
 	//write attrubutes
-
-    // 	sat->faction =
+    float faction_weights[] = {level < 7 ? (float) level / 0.025 + 2 : 0, (float) level * 0.025 + 6, (float) level * -0.2 + 5, (float) level * -0.05 + 3, pow(2, x - 25) / 5};
+    float smallest = 0;
+    float curr;
+    sat->faction = 1;
+    for (int i = 0; i < sizeof(factions) / sizeof(char*); i++)
+    {
+        curr = faction_weights / ((float) (rand() % 100))
+        if (smallest <= curr)
+        {
+            smallest = curr;
+            sat->faction = i;
+        }
+    }
+    sat->room_types = room_types;
     sat->rooms = NULL;
     sat->rooms_num = 0;
     sat->doors_num = 0;
@@ -61,7 +73,7 @@ room *room_gen(int x1, int y1, int w1, int h1, int roomNum1, satalite *p)
 
 void door_gen(room *parent, room *doorp, char direction, int x, int y)
 {
-	//alloc door
+	//malloc door
     door *p = malloc(sizeof(door));
 	//write attrubutes
     p->direction = direction;
@@ -193,7 +205,7 @@ void make_doors(room *p)
             }
 }
 
-void gen_specal_rooms(satalite *sat)
+void gen_room_types(satalite *sat)
 {
 	for (room *current = sat->rooms; current != NULL; current = current->next);
 }

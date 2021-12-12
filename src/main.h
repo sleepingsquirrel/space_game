@@ -16,6 +16,7 @@ typedef struct room_type
 	char **descriptions;
 	char *name;
 	char id;
+	struct room_type *next;
 	//add room specifec loot and stuff
 } room_type;
 
@@ -44,6 +45,7 @@ typedef struct satalite
     int sat_size, rooms_num, doors_num;
     struct room *rooms;
     struct room *starting_room;
+    room_type *room_types;
 } satalite;
 
 //card struct
@@ -121,3 +123,9 @@ void free_card(Card *next);
 void shuffle(Card *c[MAX_CARDS]);
 void print_card(Card *current);
 bool fight(_player *player);
+void quit();
+void play_card(Card *card);
+
+//functions in room_type_load.c
+room_type *load_room_types(const char *filename);
+void free_room_types(room_type *type);

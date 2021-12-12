@@ -14,6 +14,7 @@ struct _player *player;
 int main(int argc, char *argv[])
 {
     player = malloc(sizeof(_player));
+    room_type *room_type_start = load_room_types("src/room_types.txt");
     signal(SIGINT, INThandler);
     //clear screen
 	printf("\033[2J\033[1;1H");
@@ -24,14 +25,14 @@ int main(int argc, char *argv[])
     player->room = player->sat->starting_room;
     //make that room visable
    	player->room->seen = true;
-	for (int i = 1; i <= 30; i++)
-	{
-		free(player->sat);
-		player->sat = sat_gen(i, time(0));
-		printf("\n%i %i\n", i, player->sat->rooms_num);
-		draw_map(player->sat->map);
-	}
-	return 1;
+	// for (int i = 1; i <= 30; i++)
+	// {
+	// 	free(player->sat);
+	// 	player->sat = sat_gen(i, time(0));
+	// 	printf("\n%i %i\n", i, player->sat->rooms_num);
+	// 	draw_map(player->sat->map);
+	// }
+	// return 1;
     int i;
     bool running = true;
     while (running)
@@ -78,6 +79,7 @@ void Kill()
 {
     printf("\nFreeing things\n");
     free_sat(player->sat);
+    free_room_types(room_type_start);
     free(player);
     printf("Things have been freed\n");
     exit(0);

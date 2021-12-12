@@ -97,14 +97,8 @@ Card *loadcards(const char *filename)
             //Loops through the integer variable in the current carding, setting them in order
             for (int h = 0; h < 7; h++)
             {
-                for (int i = 0; words[h][i]; i++)
-                {
-                    if (isdigit(words[h][i]))
-                    {
-                        //Sets the next variable in the card to the next word.
-                        (&(current->cost_o))[h]/*the h'th variable after the cost_o of current*/ = atoi(words[h]);
-                    }
-                }
+                //Sets the next variable in the card to the next word.
+                (&(current->cost_o))[h]/*the h'th variable after the cost_o of current*/ = atoi(words[h]);
             }
             //Scrolls through marking whether they are true or false for this card
             for (int i = 0; i < EFFECT_COUNT; i++)
@@ -127,7 +121,7 @@ Card *loadcards(const char *filename)
     //Frees buffer and file
     fclose(file);
     //Returns the start of the linked list.
-    printf("%s\n", start->name);
+    //printf("%s\n", start->name);
     return start;
 }
 

@@ -15,7 +15,10 @@ typedef struct room_type
 {
 	char **descriptions;
 	char *name;
-	char id;
+	int id;
+	int min_num;
+	int probabilaty;
+	bool sat_has;
 	struct room_type *next;
 	//add room specifec loot and stuff
 } room_type;
@@ -40,7 +43,7 @@ typedef struct room
 
 typedef struct satalite
 {
-    char *faction;
+    const char *faction;
     uint8_t map[HEIGHT][WIDTH];
     int sat_size, rooms_num, doors_num;
     struct room *rooms;
@@ -86,13 +89,15 @@ typedef struct _player
 } _player;
 //function prototypes
 //functions in sat_gen.c
-satalite *sat_gen(int level, int seed);
+satalite *sat_gen(int level, int seed, room_type *room_types);
 room *draw_to_map(int x, int y, int w, int h, int data, satalite *sat);
 void gen_map();
 void door_gen(room *parent, room *doorp, char direction, int x, int y);
 room *room_gen(int x1, int y1, int w1, int h1, int roomNum1, satalite *p);
 bool check_empty(int x, int y, int w, int h, int data, satalite *sat);
 void make_doors(room *p);
+void gen_room_types(satalite *sat);
+room_type *rand_room_type(room_type *start);
 void free_sat(satalite *sat);
 void free_rooms(room *p);
 void free_doors(door *p);

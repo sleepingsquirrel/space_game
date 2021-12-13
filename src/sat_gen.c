@@ -17,24 +17,30 @@ satalite *sat_gen(int level, int seed, room_type *room_types)
 	//alloc sat
     satalite *sat = malloc(sizeof(satalite));
 	//write attrubutes
-    float faction_weights[] = {level < 7 ? (float) level / 0.025 + 2 : 0, (float) level * 0.025 + 6, (float) level * -0.2 + 5, (float) level * -0.05 + 3, pow(2, x - 25) / 5};
+    float faction_weights[] = {level < 7 ?  0 : (float) level * 0.025 + 4, (float) level * 0.025 + 5, (float) level * -0.2 + 5, (float) level * -0.05 + 4, pow(2, level - 25) / 5};
     float smallest = 0;
     float curr;
-    sat->faction = 1;
+    sat->faction = factions[0];
     for (int i = 0; i < sizeof(factions) / sizeof(char*); i++)
     {
-        curr = faction_weights / ((float) (rand() % 100))
+        curr = faction_weights[i] * ((float) rand() / RAND_MAX);
         if (smallest <= curr)
         {
             smallest = curr;
-            sat->faction = i;
+            sat->faction = factions[i];
         }
     }
     sat->room_types = room_types;
     sat->rooms = NULL;
     sat->rooms_num = 0;
     sat->doors_num = 0;
-    sat->sat_size = 5 + fmax(0, level * 5 + rand() % 7 - 5);
+	int min_rooms = 0;
+	for (room_type *type = sat->room_types; type != NULL; type = type->next)
+		if (type->min_num > 0)
+		{
+			min_rooms++;
+		}
+    sat->sat_size = min_rooms + fmax(0, level * 5 + rand() % 7 - 5);
     printf("%i\n", sat->sat_size);
     for (int y = 0; y < HEIGHT; y++)
         for (int x = 0; x < WIDTH; x++)
@@ -43,11 +49,11 @@ satalite *sat_gen(int level, int seed, room_type *room_types)
         }
 	//generate map and rooms
     gen_map(sat);
-	//gererate doors
     for (room *current = sat->rooms; current != NULL; current = current->next)
     {
         make_doors(current);
     }
+	gen_room_types(sat);
     return sat;
 }
 
@@ -207,7 +213,49 @@ void make_doors(room *p)
 
 void gen_room_types(satalite *sat)
 {
-	for (room *current = sat->rooms; current != NULL; current = current->next);
+	for (room_type *current = sat->room_types; current != NULL; current = current->next)
+	{
+		current->sat_has = false;
+	}
+	printf("asda\n");
+	for (room *current = sat->rooms; current != NULL; current = current->next)
+	{
+		current->type = rand_room_type(sat->room_types);
+		printf("%s,%i\n", current->type->name, current->type->min_num);
+
+	}
+}
+
+room_type *rand_room_type(room_type *start)
+{
+	int8_t randnum = rand() % 100;
+	for (room_type *current = start; current != NULL; current = current->next)
+	{
+		randnum -= current->probabilaty;
+		if (randnum < 0)
+		{
+			if (current->sat_has || current->min_num == 0)
+			{
+				if (current->id == 0 || current->id == 0)
+				{
+					return rand_room_type(start);
+				}
+				for (room_type *type = start; type != NULL; type = type->next)
+					if (type->min_num > 0 && !type->sat_has)
+					{
+						return rand_room_type(start);
+					}
+				return current;
+			}
+			else
+			{
+				current->sat_has = true;
+				return current;
+			}
+		}
+	}
+	printf("somthing went wrong\n");
+	return NULL;
 }
 
 void free_sat(satalite *sat)

@@ -10,29 +10,23 @@
 #include "src/main.h"
 
 struct _player *player;
+room_type *room_type_start;
 
 int main(int argc, char *argv[])
 {
     player = malloc(sizeof(_player));
-    room_type *room_type_start = load_room_types("src/room_types.txt");
+    room_type_start = load_room_types("src/data/room_types.txt");
+	for (room_type *current = room_type_start; current != NULL; current = current->next);
     signal(SIGINT, INThandler);
     //clear screen
 	printf("\033[2J\033[1;1H");
 	player->gold = 0;
     printf("Creating satalite\n");
-	player->sat = sat_gen(fmax(atoi(argv[1] ? argv[1] : "0"), 1), time(0));
+	player->sat = sat_gen(fmax(atoi(argv[1] ? argv[1] : "0"), 1), time(0), room_type_start);
     //set the room that the player is in to the starting room
     player->room = player->sat->starting_room;
     //make that room visable
    	player->room->seen = true;
-	// for (int i = 1; i <= 30; i++)
-	// {
-	// 	free(player->sat);
-	// 	player->sat = sat_gen(i, time(0));
-	// 	printf("\n%i %i\n", i, player->sat->rooms_num);
-	// 	draw_map(player->sat->map);
-	// }
-	// return 1;
     int i;
     bool running = true;
     while (running)
@@ -57,8 +51,8 @@ int main(int argc, char *argv[])
 				search(player);
 				break;
 			case 6:
-			    free(player->sat);
-			    player->sat = sat_gen(fmax(atoi(argv[1] ? argv[1] : "0"), 1), time(0));
+			    free_sat(player->sat);
+			    player->sat = sat_gen(fmax(atoi(argv[1] ? argv[1] : "0"), 1), time(0), room_type_start);
 			    printf("%i\n", player->sat->rooms_num);
 			    draw_map(player->sat->map);
 			    break;

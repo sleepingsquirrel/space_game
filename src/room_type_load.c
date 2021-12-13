@@ -1,5 +1,8 @@
 #include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 
+#include "main.h"
 room_type *load_room_types(const char *filename)
 {
     //Opens the given file
@@ -29,9 +32,10 @@ room_type *load_room_types(const char *filename)
     l = 0;
     while (fread(&buffer, sizeof(char), 1, file))
     {
-        if (l < 3)
+        if (l <= 3)
+			{
             k++;
-            if (buffer == '\n' || buffer == ',')
+            if (buffer == ';' || buffer == ',')
             {
                 words[j][k - 1] = '\0';
                 k = 0;
@@ -39,11 +43,12 @@ room_type *load_room_types(const char *filename)
                 if (buffer != ',')
                 {
                     l++;
-                    if(!fread(&buffer, sizeof(char), 1, file))
-                    {
-                        break;
-                    };
                 }
+
+				if(!fread(&buffer, sizeof(char), 1, file))
+				{
+					break;
+				}
             }
             else
             {
@@ -53,21 +58,25 @@ room_type *load_room_types(const char *filename)
         else
         {
             current = malloc(sizeof(room_type));
-            current->name = malloc(strlen(words[0]) + 1);
-            strcpy(current->name, &words[0][0]);
+            current->name = malloc(strlen(words[0]));
+            strcpy(current->name, (words[0][0] == '\n') ? &words[0][1] : &words[0][0]);
             current->name[strlen(words[0])] = '\0';
-            current->id = atoi(words[1]);
-            current->descriptions = malloc(sizeof(char*) * j - 1);
+
+			current->id = atoi(words[1]);
+			current->min_num = atoi(words[2]);
+            current->probabilaty = atoi(words[3]);
+			
+            current->descriptions = malloc(sizeof(char*) * j - 2);
             int i;
-            for (i = 0; i < j; i++)
+            for (i = 0; i < j - 2; i++)
             {
-                current->descriptions[i] = malloc(strlen(words[i + 2]) + 1)
-                for (int c = 0; c < strlen(words[i + 2]) + 1; c++)
+                current->descriptions[i] = malloc(strlen(words[i + 3])  + 1);
+                for (int c = 0; c < strlen(words[i + 3]) + 1; c++)
                 {
-                   current->descriptions[i] = words[i + 2][c];
+                   current->descriptions[i][c] = words[i + 3][c];
                 }
-                current->descriptions[i] = '\0'
             }
+			current->descriptions[i] = NULL;
 
             //Places current at the front of the linked list
             current->next = start;
@@ -85,14 +94,20 @@ room_type *load_room_types(const char *filename)
 
 void free_room_types(room_type *type)
 {
+	if (type == NULL)
+	{
+		printf("loadcards using wrong filename or did not run properly\n");
+		return;
+	}
     if (type->next != NULL)
     {
         free_room_types(type->next);
     }
-    for(int i = 0; type->descriptions[i]; i++)
+    for(int i = 0; type->descriptions[i] != NULL; i++)
     {
         free(type->descriptions[i]);
     }
     free(type->descriptions);
     free(type->name);
+	free(type);
 }

@@ -98,7 +98,7 @@ void gen_map(satalite *sat) //generate satalite
     int tempranx = (1 + rand() % 10) / 4 + 2;
     int temprany = (1 + rand() % 10) / 8 + 2;
 	//draw center room of the satalite and make it starting_room
-    sat->starting_room = draw_to_map(25 - tempranx / 2, 12 - temprany / 2, tempranx, temprany, 1, sat);
+    sat->starting_room = draw_to_map(WIDTH/2 - tempranx / 2, HEIGHT/2 - temprany / 2, tempranx, temprany, 1, sat);
 	//gen the rooms
 	for (int size = 1; size < sat->sat_size && sat->rooms_num < sat->sat_size; size++)
         for (int i = 2; i < size + 2; i++)
@@ -224,9 +224,9 @@ void gen_room_types(satalite *sat)
 	}
 	for (room_type *current = sat->room_types; current != NULL; current = current->next)
 	{
-	    if (current->sat_has >= -1)
+	    if (current->id >= -1)
 	    {
-	        printf("%s %i, %f\n", current->name, current->sat_has, (float)sat->rooms_num) / (float)current->sat_has;
+	        printf("%s %i, %f\n", current->name, current->sat_has, (float) current->sat_has / (float) sat->rooms_num * 100);
 	    }
 	}
 }
@@ -249,7 +249,6 @@ room_type *rand_room_type(room_type *start, satalite *sat)
 				{
 				    room_type *next = start;
 				    for (int i = 0; i < 4 - sat->factionID; i++, next = next->next);
-                    printf("%s, %s\n", next->name, sat->faction);
                     current->sat_has++;
                     return next;
 				}

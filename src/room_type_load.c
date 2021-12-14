@@ -58,14 +58,14 @@ room_type *load_room_types(const char *filename)
         else
         {
             current = malloc(sizeof(room_type));
-            current->name = malloc(strlen(words[0]));
+            current->name = malloc(strlen(words[0]) + 1);
             strcpy(current->name, (words[0][0] == '\n') ? &words[0][1] : &words[0][0]);
             current->name[strlen(words[0])] = '\0';
 
 			current->id = atoi(words[1]);
 			current->min_num = atoi(words[2]);
             current->probabilaty = atoi(words[3]);
-			
+
             current->descriptions = malloc(sizeof(char*) * j - 2);
             int i;
             for (i = 0; i < j - 2; i++)

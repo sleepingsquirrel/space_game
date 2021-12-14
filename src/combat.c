@@ -4,10 +4,15 @@
 #include <string.h>
 #include <time.h>
 #include <ctype.h>
+#include <math.h>
 
 #include "main.h"
 
 const char *name_of_var_for_print_f[] = {"cost_o", "cost_e", "cost_h", "targets", "dam_o", "dam_e", "dam_h"};
+int test_enemy_oxygen = 10;
+int test_enemy_energy = 10;
+int test_enemy_health = 10;
+int devstat = 10;
 
 int main(void)
 {
@@ -18,17 +23,19 @@ int main(void)
     Card *start = loadcards("data/testcards.txt");
     //printf("3\n");
     int i = 0;
-    for (int i = 0; i < MAX_CARDS; i++)
+    for (i = 0; i < MAX_CARDS; i++)
     {
         test->deck[i] = NULL;
     }
+    i = 0;
     for (Card *current = start; current != NULL; current = current->next)
     {
         test->deck[i] = current;
         i++;
     }
+    for (i = 0; i < 6; (&(test->health))[i] = 10, i++);
     //printf("4\n");
-    fight(test);
+    printf("%s\n", fight(test) ? "win": "loss");
     free_card(start);
     free(test);
 }
@@ -42,9 +49,7 @@ bool fight(_player *player)
         draw_pile[i] = player->deck[i];
     }
     Card *discard_pile[MAX_CARDS];
-    //printf("5\n");
     shuffle(draw_pile);
-    //printf("6\n");
     Card *hand[3];
     for (int i = 0; i < 3; i++)
     {
@@ -57,23 +62,20 @@ bool fight(_player *player)
         {
             hand[i] = draw_pile[drawn];
             drawn++;
-            //print_card(hand[i]);
         }
-        //printf("7\n");
     }
     bool still_going = true;
+    int result = 0;
     while (still_going)
     {
         printf("PLAYER - Oxygen: %i/%i  Energy: %i/%i   Health: %i/%i\n", player->oxygen, player->maxOxygen, player->energy, player->maxEnergy, player->health, player->maxHealth);
-        printf("ENEMY - Oxygen: %i/%i  Energy: %i/%i   Health: %i/%i\n", 10, 10, 10, 10, 10, 10);
+        printf("ENEMY - Oxygen: %i/%i  Energy: %i/%i   Health: %i/%i\n", test_enemy_oxygen, 10, test_enemy_energy, 10, test_enemy_health, 10);
         printf("PLAYER HAND:\n%s\n%s\n%s\n", hand[0]->name, hand[1]->name, hand[2]->name);
         printf("Action>");
-        //memset(&input[0], 0, sizeof(draw_pile));
     	char input[15];
     	fgets(input, 15, stdin);
     	int q;
     	for (q = 0; input[q] != '\n'; input[q] = tolower(input[q]), q++);
-    	//end the string
     	input[q] = '\0';
     	int num[] = {2, 4, 3, 2};
     	char *strings[] = {
@@ -110,11 +112,13 @@ bool fight(_player *player)
     	    case 2:
     	        printf("Which card would you like to know about?\n");
     	        fgets(input, 15, stdin);
+    	        for (q = 0; input[q] != '\n'; q++);
+    	        input[0] = toupper(input[0]);
+    	        input[q] = '\0';
     	        for (int i = 0; i < 3; i++)
     	        {
-    	            if (strcmp(input, hand[i]->name))
+    	            if (!strcmp(input, hand[i]->name))
     	            {
-    	                printf("true");
     	                print_card(hand[i]);
     	            }
     	        }
@@ -122,17 +126,32 @@ bool fight(_player *player)
     	    case 3:
     	        printf("Which card would you like to play?\n");
     	        fgets(input, 15, stdin);
+    	        for (q = 0; input[q] != '\n'; q++);
+    	        input[0] = toupper(input[0]);
+    	        input[q] = '\0';
     	        for (int i = 0; i < 3; i++)
     	        {
-    	            if (!strcmp(input, hand[i]->name) == 0)
+    	            if (!strcmp(input, hand[i]->name))
     	            {
-    	                play_card(hand[i]);
+    	                play_card(hand[i], player);
+    	                if(!draw_pile[drawn])
+    	                {
+    	                    shuffle(draw_pile)
+    	                }
+    	                for (int j = 0; j < 3; j++)
+    	                {
+    	                    if (hand[j])
+    	                }
+    	                hand[i] = draw_pile[drawn];
+                        drawn++;
     	            }
     	        }
     	        break;
     	}
+    	result = check_life(player);
+    	still_going = (result != 0) ? false: true;
     }
-    return false;
+    return (result < 0) ? true: false;
 }
 
 void shuffle(Card *c[MAX_CARDS])
@@ -181,7 +200,54 @@ void quit()
     printf("\n.\n");
 }
 
-void play_card(Card *card)
+void play_card(Card *card, _player *player)
 {
-    printf("g\n");
+    player->oxygen = fmin(player->maxOxygen, fmax(0, player->oxygen + card->cost_o));
+    player->energy = fmin(player->maxEnergy, fmax(0, player->energy + card->cost_e));
+    player->health = fmin(player->maxHealth, fmax(0, player->health + card->cost_h));
+    test_enemy_oxygen = fmin(10, fmax(0, test_enemy_oxygen - card->dam_o));
+    test_enemy_energy = fmin(10, fmax(0, test_enemy_energy - card->dam_e));
+    test_enemy_health = fmin(10, fmax(0, test_enemy_health - card->dam_h));
+    if (card->effects[0] == true)
+    {
+        printf("hi");
+    }
+
+    enemy_turn(player);
+}
+
+void enemy_turn(_player *player)
+{
+   player->oxygen = fmin(player->maxOxygen, fmax(0, player->oxygen - 1));
+   player->energy = fmin(player->maxEnergy, fmax(0, player->energy - 1));
+   player->health = fmin(player->maxHealth, fmax(0, player->health - 1));
+}
+
+int check_life(_player *player)
+{
+    if (player->oxygen == 0)
+    {
+        return 1;
+    }
+    if (player->energy == 0)
+    {
+        return 1;
+    }
+    if (player->health == 0)
+    {
+        return 1;
+    }
+    if (test_enemy_oxygen == 0)
+    {
+        return -1;
+    }
+    if (test_enemy_energy == 0)
+    {
+        return -1;
+    }
+    if (test_enemy_health == 0)
+    {
+        return -1;
+    }
+    return 0;
 }

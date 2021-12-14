@@ -121,7 +121,6 @@ Card *loadcards(const char *filename)
     //Frees buffer and file
     fclose(file);
     //Returns the start of the linked list.
-    //printf("%s\n", start->name);
     return start;
 }
 

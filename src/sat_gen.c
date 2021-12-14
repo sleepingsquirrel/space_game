@@ -28,6 +28,7 @@ satalite *sat_gen(int level, int seed, room_type *room_types)
         {
             smallest = curr;
             sat->faction = factions[i];
+            sat->factionID = i;
         }
     }
     sat->room_types = room_types;
@@ -215,18 +216,22 @@ void gen_room_types(satalite *sat)
 {
 	for (room_type *current = sat->room_types; current != NULL; current = current->next)
 	{
-		current->sat_has = false;
+		current->sat_has = 0;
 	}
-	printf("asda\n");
 	for (room *current = sat->rooms; current != NULL; current = current->next)
 	{
-		current->type = rand_room_type(sat->room_types);
-		printf("%s,%i\n", current->type->name, current->type->min_num);
-
+		current->type = rand_room_type(sat->room_types, sat);
+	}
+	for (room_type *current = sat->room_types; current != NULL; current = current->next)
+	{
+	    if (current->sat_has >= -1)
+	    {
+	        printf("%s %i, %f\n", current->name, current->sat_has, (float)sat->rooms_num) / (float)current->sat_has;
+	    }
 	}
 }
 
-room_type *rand_room_type(room_type *start)
+room_type *rand_room_type(room_type *start, satalite *sat)
 {
 	int8_t randnum = rand() % 100;
 	for (room_type *current = start; current != NULL; current = current->next)
@@ -236,20 +241,29 @@ room_type *rand_room_type(room_type *start)
 		{
 			if (current->sat_has || current->min_num == 0)
 			{
-				if (current->id == 0 || current->id == 0)
+				if (current->id == 0 || current->id == 2)
 				{
-					return rand_room_type(start);
+					return rand_room_type(start, sat);
+				}
+				if (current->id == -1)
+				{
+				    room_type *next = start;
+				    for (int i = 0; i < 4 - sat->factionID; i++, next = next->next);
+                    printf("%s, %s\n", next->name, sat->faction);
+                    current->sat_has++;
+                    return next;
 				}
 				for (room_type *type = start; type != NULL; type = type->next)
 					if (type->min_num > 0 && !type->sat_has)
 					{
-						return rand_room_type(start);
+						return rand_room_type(start, sat);
 					}
+				current->sat_has++;
 				return current;
 			}
 			else
 			{
-				current->sat_has = true;
+				current->sat_has++;
 				return current;
 			}
 		}

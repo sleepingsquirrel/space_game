@@ -17,8 +17,8 @@ typedef struct room_type
 	char *name;
 	int id;
 	int min_num;
-	int probabilaty;
-	bool sat_has;
+	uint8_t probabilaty;
+	uint8_t sat_has;
 	struct room_type *next;
 	//add room specifec loot and stuff
 } room_type;
@@ -45,7 +45,7 @@ typedef struct satalite
 {
     const char *faction;
     uint8_t map[HEIGHT][WIDTH];
-    int sat_size, rooms_num, doors_num;
+    int sat_size, rooms_num, doors_num, factionID;
     struct room *rooms;
     struct room *starting_room;
     room_type *room_types;
@@ -97,7 +97,7 @@ room *room_gen(int x1, int y1, int w1, int h1, int roomNum1, satalite *p);
 bool check_empty(int x, int y, int w, int h, int data, satalite *sat);
 void make_doors(room *p);
 void gen_room_types(satalite *sat);
-room_type *rand_room_type(room_type *start);
+room_type *rand_room_type(room_type *start, satalite *sat);
 void free_sat(satalite *sat);
 void free_rooms(room *p);
 void free_doors(door *p);
@@ -129,7 +129,9 @@ void shuffle(Card *c[MAX_CARDS]);
 void print_card(Card *current);
 bool fight(_player *player);
 void quit();
-void play_card(Card *card);
+void play_card(Card *card, _player *player);
+int check_life(_player *player);
+void enemy_turn(_player *player);
 
 //functions in room_type_load.c
 room_type *load_room_types(const char *filename);

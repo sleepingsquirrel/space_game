@@ -7,16 +7,15 @@
 #include <math.h>
 
 #include "main.h"
+#include "effects.h"
 
-const char *name_of_var_for_print_f[] = {"cost_o", "cost_e", "cost_h", "targets", "dam_o", "dam_e", "dam_h"};
+const char *name_of_var_for_print_f[] = {"Oxygen Cost", "Energy Cost", "Health Cost", "# of Targets", "Oxygen Damage", "Energy Damage", "Health Damage"};
 int test_enemy_oxygen = 10;
 int test_enemy_energy = 10;
 int test_enemy_health = 10;
-int devstat = 10;
 
 int main(void)
 {
-    //printf("1\n");
     srand(time(0));
     _player *test = malloc(sizeof(_player));
     //printf("2\n");
@@ -42,19 +41,21 @@ int main(void)
 
 bool fight(_player *player)
 {
+    //Initializes draw pile and sets it equal to the player's deck, randomly ordered
     Card *draw_pile[MAX_CARDS];
     memset(&draw_pile[0], 0, sizeof(draw_pile));
     for (int i = 0; player->deck[i]; i++)
     {
         draw_pile[i] = player->deck[i];
     }
-    Card *discard_pile[MAX_CARDS];
     shuffle(draw_pile);
+    //Initializes hand as 3 nulls
     Card *hand[3];
     for (int i = 0; i < 3; i++)
     {
         hand[i] = NULL;
     }
+    //Draws cards from draw pile to fill hand
     int drawn = 0;
     for (int i = 0; i < 3; i++)
     {
@@ -64,23 +65,27 @@ bool fight(_player *player)
             drawn++;
         }
     }
+    //Runs round-to-round combat for as long as it continues
     bool still_going = true;
     int result = 0;
     while (still_going)
     {
+        //Prints important info for the player's turn
         printf("PLAYER - Oxygen: %i/%i  Energy: %i/%i   Health: %i/%i\n", player->oxygen, player->maxOxygen, player->energy, player->maxEnergy, player->health, player->maxHealth);
         printf("ENEMY - Oxygen: %i/%i  Energy: %i/%i   Health: %i/%i\n", test_enemy_oxygen, 10, test_enemy_energy, 10, test_enemy_health, 10);
         printf("PLAYER HAND:\n%s\n%s\n%s\n", hand[0]->name, hand[1]->name, hand[2]->name);
+        //Gets input from the player in the form of a string
         printf("Action>");
     	char input[15];
     	fgets(input, 15, stdin);
     	int q;
     	for (q = 0; input[q] != '\n'; input[q] = tolower(input[q]), q++);
     	input[q] = '\0';
-    	int num[] = {2, 4, 3, 2};
+    	//Analyzes player input as one of 4 commands
+    	int num[] = {2, 5, 3, 2};
     	char *strings[] = {
     		"help", "h",
-    		"quit", "q", "close", "stop",
+    		"quit", "q", "surrender", "stop", "s",
     		"info", "card", "i",
     		"play", "p",
     	};
@@ -100,16 +105,18 @@ bool fight(_player *player)
     			break;
     		}
     	}
+    	//Uses command given by player
     	switch (last_command)
     	{
-    	    case 0:
+    	    case 0: /*help*/
+    	        //prints help info
     	        printf("List of commands:\nhelp - this\nstop - leaves game\ninfo - gives info on a card\nplay - plays a card\n");
     	        break;
-    	    case 1:
-    	        quit();
-    	        still_going = false;
+    	    case 1: /*surrender*/
+    	        //TODO
     	        break;
-    	    case 2:
+    	    case 2: /*info*/
+    	        //asks player to input the name of one of their cards, printing that card's information
     	        printf("Which card would you like to know about?\n");
     	        fgets(input, 15, stdin);
     	        for (q = 0; input[q] != '\n'; q++);
@@ -123,7 +130,8 @@ bool fight(_player *player)
     	            }
     	        }
     	        break;
-    	    case 3:
+    	    case 3: /*play*/
+    	        //asks player for the name of one of their cards
     	        printf("Which card would you like to play?\n");
     	        fgets(input, 15, stdin);
     	        for (q = 0; input[q] != '\n'; q++);
@@ -133,25 +141,34 @@ bool fight(_player *player)
     	        {
     	            if (!strcmp(input, hand[i]->name))
     	            {
+    	                //plays the named card
     	                play_card(hand[i], player);
-    	                if(!draw_pile[drawn])
+    	                //draws cards back up to hand limit, reshuffles when needed
+    	                if(draw_pile[drawn] != NULL)
     	                {
-    	                    shuffle(draw_pile)
+    	                    shuffle(draw_pile);
+    	                    drawn = 0;
     	                }
     	                for (int j = 0; j < 3; j++)
     	                {
-    	                    if (hand[j])
+    	                    if (hand[j] == draw_pile[drawn])
+    	                    {
+    	                        j = 0;
+    	                        drawn++;
+    	                    }
     	                }
     	                hand[i] = draw_pile[drawn];
                         drawn++;
+                        break;
     	            }
     	        }
     	        break;
     	}
+    	//
     	result = check_life(player);
-    	still_going = (result != 0) ? false: true;
+    	still_going = result != 0;
     }
-    return (result < 0) ? true: false;
+    return result < 0;
 }
 
 void shuffle(Card *c[MAX_CARDS])
@@ -195,11 +212,6 @@ void print_card(Card *current)
     printf("\n");
 }
 
-void quit()
-{
-    printf("\n.\n");
-}
-
 void play_card(Card *card, _player *player)
 {
     player->oxygen = fmin(player->maxOxygen, fmax(0, player->oxygen + card->cost_o));
@@ -210,7 +222,11 @@ void play_card(Card *card, _player *player)
     test_enemy_health = fmin(10, fmax(0, test_enemy_health - card->dam_h));
     if (card->effects[0] == true)
     {
-        printf("hi");
+        //TODO
+    }
+    if (card->effects[1] == true)
+    {
+        //TODO
     }
 
     enemy_turn(player);

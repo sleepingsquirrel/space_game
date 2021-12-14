@@ -1,13 +1,16 @@
 To Do:
-Everything
+Finish room types
+Looting system
+Player Character
+Item/chip
+Inventory System
+Enemies
+Multiple enemy combat
+Campaign stuff
+Saving & Loading
+High Scores
+Overall polish
+Card effects
 
-Current Priorities:
-room types
-room loot
-loot
-items
-inventory
-name
-Combat + Brainstorm
-cards
-chips
+Currently working on:
+Room types

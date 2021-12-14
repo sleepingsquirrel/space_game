@@ -71,6 +71,14 @@ typedef struct _Card
     struct _Card *next;
 } Card;
 
+typedef struct Enemy
+{
+    char *name;
+
+    Card *deck[MAX_CARDS];
+
+} Enemy;
+
 //player struct
 typedef struct _player
 {

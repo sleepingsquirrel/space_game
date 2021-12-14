@@ -42,7 +42,7 @@ satalite *sat_gen(int level, int seed, room_type *room_types)
 			min_rooms++;
 		}
     sat->sat_size = min_rooms + fmax(0, level * 5 + rand() % 7 - 5);
-    printf("%i\n", sat->sat_size);
+    // printf("%i\n", sat->sat_size);
     for (int y = 0; y < HEIGHT; y++)
         for (int x = 0; x < WIDTH; x++)
         {
@@ -222,13 +222,13 @@ void gen_room_types(satalite *sat)
 	{
 		current->type = rand_room_type(sat->room_types, sat);
 	}
-	for (room_type *current = sat->room_types; current != NULL; current = current->next)
-	{
-	    if (current->sat_has >= -1)
-	    {
-	        printf("%s %i, %f\n", current->name, current->sat_has, (float)sat->rooms_num) / (float)current->sat_has;
-	    }
-	}
+	// for (room_type *current = sat->room_types; current != NULL; current = current->next)
+	// {
+	//     if (current->sat_has >= -1)
+	//     {
+	//         printf("%s %i, %f\n", current->name, current->sat_has, (float)sat->rooms_num) / (float)current->sat_has;
+	//     }
+	// }
 }
 
 room_type *rand_room_type(room_type *start, satalite *sat)
@@ -249,7 +249,7 @@ room_type *rand_room_type(room_type *start, satalite *sat)
 				{
 				    room_type *next = start;
 				    for (int i = 0; i < 4 - sat->factionID; i++, next = next->next);
-                    printf("%s, %s\n", next->name, sat->faction);
+                    // printf("%s, %s\n", next->name, sat->faction);
                     current->sat_has++;
                     return next;
 				}

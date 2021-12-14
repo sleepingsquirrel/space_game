@@ -1,0 +1,2 @@
+language = "bash"
+run = "rm space_game\nmake -B space_game\n./space_game"

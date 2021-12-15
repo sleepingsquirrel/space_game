@@ -28,13 +28,24 @@ int main(int argc, char *argv[])
     //make that room visable
    	player->room->seen = true;
     int i;
+    FILE *file;
+    char buffer;
     bool running = true;
+    printf("Type \"help\" for help\n");
     while (running)
     {
     	//get input
 		switch(get_command())
 		{
 			//process commands
+			case 0://help
+				file = fopen("help.txt", "r");
+				while (fread(&buffer, sizeof(char), 1, file))
+				{
+					printf("%c", buffer);
+				}
+				fclose(file);
+				break;
 			case 1://quit
 				running = false;
 				break;

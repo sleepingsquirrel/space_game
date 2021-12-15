@@ -108,14 +108,14 @@ int get_command()
 		return last_command;
 	}
 	//num stores nuber of aliases of each command
-	int num[] = {2, 4, 3, 3, 1, 5, 2};
+	int num[] = {3, 4, 3, 3, 2, 5, 2};
 	//strings stores each command
 	char *strings[] = {
-		"help", "h",
+		"help", "h", "\"help\"",
 		"quit", "q", "close", "stop",
 		"map", "draw", "mp",
 		"move", "m", "mv",
-		"devmap",
+		"devmap", "dm",
 		"search", "s", "see", "inspect", "room",
 		"new", "n"
 	};

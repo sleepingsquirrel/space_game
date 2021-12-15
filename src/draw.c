@@ -57,6 +57,7 @@ void draw_seen_map(satalite *sat)
 				maxy = current->y + current->h;
 			}
 		}
+	minx--;
 	uint8_t map[maxy-miny][maxx-minx][2];
 	for (int x = 0; x < maxx-minx; x++)
 		for (int y = 0; y < maxy-miny; y++)
@@ -90,10 +91,10 @@ void draw_seen_map(satalite *sat)
 		{
 			printf("%s%c ", color((int) map[y][x][0]), map[y][x][1]);
 		}
-		printf("\n");
+		printf("%s\n", color(0));
 	}
 	//reset color
-	printf("\n");
+	printf("%s\n", color(0));
 }
 
 const char *color(int num)

@@ -166,7 +166,7 @@ bool fight(_player *player)
     	}
     	//
     	result = check_life(player);
-    	still_going = result != 0;
+    	still_going = result =+= 0;
     }
     return result < 0;
 }

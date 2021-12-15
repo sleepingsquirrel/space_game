@@ -57,11 +57,7 @@ void draw_seen_map(satalite *sat)
 				maxy = current->y + current->h;
 			}
 		}
-  minx--;
-  miny--;
-  maxx++;
-  maxy++;
-  uint8_t map[maxy-miny][maxx-minx][2];
+	uint8_t map[maxy-miny][maxx-minx][2];
 	for (int x = 0; x < maxx-minx; x++)
 		for (int y = 0; y < maxy-miny; y++)
 		{
@@ -79,7 +75,7 @@ void draw_seen_map(satalite *sat)
 			for (int rx = 0; rx < current->w; rx++)
 				for (int ry = 0; ry < current->h; ry++)
 				{
-					map[ry + current->y - miny][rx + current->x - minx][0] = current->data % 2 ? 3 : 2;//current->type->id < 0 ? 1 : current->type->id + 2;
+					map[ry + current->y - miny][rx + current->x - minx][0] = current->data;//current->type->id < 0 ? 1 : current->type->id + 2;
 				}
 			map[current->y - miny][current->x - minx][1] = current->type->name[0];
 

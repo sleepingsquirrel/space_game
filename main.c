@@ -31,6 +31,8 @@ int main(int argc, char *argv[])
     FILE *file;
     char buffer;
     bool running = true;
+	char input[5];
+	int inp;
     printf("Type \"help\" for help\n");
     while (running)
     {
@@ -62,8 +64,11 @@ int main(int argc, char *argv[])
 				search(player);
 				break;
 			case 6:
+				printf("\nGive Size: ");
+				fgets(input, 5, stdin);
+				inp = atoi(input);
 			    free_sat(player->sat);
-			    player->sat = sat_gen(fmax(atoi(argv[1] ? argv[1] : "0"), 1), time(0), room_type_start);
+			    player->sat = sat_gen(fmin(inp > 1 ? inp : 1, 50), time(0), room_type_start);
 			    printf("%i\n", player->sat->rooms_num);
 			    draw_map(player->sat->map);
 			    break;

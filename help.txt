@@ -1,0 +1,44 @@
+Usage:
+    ./space_game {level of space station (1 - 30 is best)}
+
+Ease of use features:
+    Crtl + c will quit without memory leaks
+
+    Use tab to repeat last command
+
+Commands:
+    Help:
+        Aliases:
+            h, "help"
+        Function:
+            Prints out help screen
+    Quit:
+        Aliases:
+            q, close, stop
+        Function:
+            Frees memory and quits program
+    Map:
+        Aliases:
+            draw, mp
+        Function:
+            Prints out picture of seen rooms and what type they are
+    Move:
+        Aliases:
+            m, mv
+        Function:
+            Lets you select witch room to move into
+    Devmap:
+        Aliases:
+            dm
+        Function:
+            Prints out all rooms
+    Search:
+        Aliases:
+            s, see, inspect, room
+        Function:
+            Prints out the type of room you are in
+    New:
+        Aliases:
+            n
+        Function:
+            Creates a new satalite

@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
 	for (room_type *current = room_type_start; current != NULL; current = current->next);
     signal(SIGINT, INThandler);
     //clear screen
-	printf("\033[2J\033[1;1H");
+	printf("\033c");
 	player->gold = 0;
     printf("Creating satalite\n");
 	player->sat = sat_gen(fmax(atoi(argv[1] ? argv[1] : "0"), 1), time(0), room_type_start);

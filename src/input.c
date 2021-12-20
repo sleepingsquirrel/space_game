@@ -25,8 +25,10 @@ void move(room **player, satalite *sat)
     }
 	//print out map but just the part we have drawn
     int index = 1;
+    printf("\n");
     for (int ry = 0; ry  < player_room->h + 2; ry++)
-        {
+    {
+    	printf("  ");
         for (int rx = 0; rx < player_room->w + 2; rx++)
 			//test if the current position is the data of the players position or 0
             if (map[player_room->y-1 + ry][player_room->x-1 + rx] == player_room->data ||
@@ -48,7 +50,7 @@ void move(room **player, satalite *sat)
 				//reset index
 				index = 1;
             }
-        printf("\n");
+        printf("%s\n", color(0));
         }
 	//get input
 	printf("\nmove to>");

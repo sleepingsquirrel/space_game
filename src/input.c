@@ -99,7 +99,7 @@ int get_command()
 	printf(">");
 	fgets(input, 50, stdin);
 	//clear screen
-	printf("\033[2J\033[1;1H");
+	printf("\033c");
 	//make input lowercase
 	int i;
 	for (i = 0; input[i] != '\n'; input[i] = tolower(input[i]), i++);

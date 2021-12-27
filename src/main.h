@@ -5,6 +5,8 @@
 #define WIDTH 50
 #define EFFECT_COUNT 2
 #define MAX_CARDS 6
+#define foreach(type, item, list) \
+    for(type * item = list; item != NULL; item = item->next)
 
 //struct prototypes
 struct satalite;

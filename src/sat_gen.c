@@ -113,19 +113,19 @@ void gen_map(satalite *sat) //generate satalite
 						//make the room
                         if (sat->map[y + 1][x] == 0)
                         {
-                            draw_to_map(x - tempranx / 4, y + 1, fmax(tempranx / 2, 1), fmax(temprany, 1), i, sat);
+                            draw_to_map(x - tempranx / 5, y + 1, fmax(tempranx / 2, 1), fmax(temprany, 1), i, sat);
                         }
                         if (sat->map[y - 1][x] == 0)
                         {
-                            draw_to_map(x - tempranx / 4, y - temprany, fmax(tempranx / 2, 1), fmax(temprany, 1), i, sat);
+                            draw_to_map(x - tempranx / 5, y - temprany, fmax(tempranx / 2, 1), fmax(temprany, 1), i, sat);
                         }
                         if (sat->map[y][x - 1] == 0)
                         {
-                            draw_to_map(x - tempranx, y - temprany / 4, fmax(tempranx, 1), fmax(temprany / 2, 1), i, sat);
+                            draw_to_map(x - tempranx, y - temprany / 5, fmax(tempranx, 1), fmax(temprany / 2, 1), i, sat);
                         }
                         if (sat->map[y][x + 1] == 0)
                         {
-                            draw_to_map(x + 1, y - temprany / 4, fmax(tempranx, 1), fmax(temprany / 2, 1), i, sat);
+                            draw_to_map(x + 1, y - temprany / 5, fmax(tempranx, 1), fmax(temprany / 2, 1), i, sat);
                         }
                         if (sat->rooms_num >= sat->sat_size)
                         {
@@ -233,8 +233,12 @@ void gen_room_types(satalite *sat)
 
 room_type *rand_room_type(room_type *start, satalite *sat)
 {
+    //random number between 1 & 100
 	int8_t randnum = rand() % 100;
-	for (room_type *current = start; current != NULL; current = current->next)
+	//for each room_type
+	// 	for (room_type *current = start; current != NULL; current = current->next)
+	room_type *current;
+	foreach (room_type, current, start)
 	{
 		randnum -= current->probabilaty;
 		if (randnum < 0)
@@ -243,8 +247,11 @@ room_type *rand_room_type(room_type *start, satalite *sat)
 			{
 				if (current->id == 0 || current->id == 2)
 				{
-					return rand_room_type(start, sat);
+					randnum = rand() % 100;
+					current = start;
+					continue;
 				}
+
 				if (current->id == -1)
 				{
 				    room_type *next = start;
@@ -253,11 +260,18 @@ room_type *rand_room_type(room_type *start, satalite *sat)
                     current->sat_has++;
                     return next;
 				}
+
 				for (room_type *type = start; type != NULL; type = type->next)
 					if (type->min_num > 0 && !type->sat_has)
 					{
-						return rand_room_type(start, sat);
+						randnum = rand() % 100;
+						current = start;
 					}
+				if (randnum >= 0)
+				{
+				    continue;
+				}
+
 				current->sat_has++;
 				return current;
 			}

@@ -3,8 +3,8 @@
 
 #define HEIGHT 26
 #define WIDTH 50
-#define EFFECT_COUNT 2
-#define MAX_CARDS 6
+#define EFFECT_COUNT 8
+#define MAX_CARDS 16
 #define foreach(type, item, list) \
     for(type * item = list; item != NULL; item = item->next)
 
@@ -141,7 +141,7 @@ bool fight(_player *player);
 void quit();
 void play_card(Card *card, _player *player);
 int check_life(_player *player);
-void enemy_turn(_player *player);
+void enemy_turn(_player *player, int modifier);
 
 //functions in room_type_load.c
 room_type *load_room_types(const char *filename);

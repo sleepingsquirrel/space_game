@@ -7,19 +7,23 @@
 #include <math.h>
 
 #include "main.h"
-#include "effects.h"
 
 const char *name_of_var_for_print_f[] = {"Oxygen Cost", "Energy Cost", "Health Cost", "# of Targets", "Oxygen Damage", "Energy Damage", "Health Damage"};
 int test_enemy_oxygen = 10;
 int test_enemy_energy = 10;
 int test_enemy_health = 10;
 
+//Status effects
+bool thorns = false;
+bool bleeding = false;
+bool targeting = false;
+
 int main(void)
 {
     srand(time(0));
     _player *test = malloc(sizeof(_player));
     //printf("2\n");
-    Card *start = loadcards("data/testcards.txt");
+    Card *start = loadcards("data/cards.txt");
     //printf("3\n");
     int i = 0;
     for (i = 0; i < MAX_CARDS; i++)
@@ -31,6 +35,10 @@ int main(void)
     {
         test->deck[i] = current;
         i++;
+        if (i >= MAX_CARDS)
+        {
+            break;
+        }
     }
     for (i = 0; i < 6; (&(test->health))[i] = 10, i++);
     //printf("4\n");
@@ -166,7 +174,7 @@ bool fight(_player *player)
     	}
     	//
     	result = check_life(player);
-    	still_going = result =+= 0;
+    	still_going = result == 0;
     }
     return result < 0;
 }
@@ -220,23 +228,31 @@ void play_card(Card *card, _player *player)
     test_enemy_oxygen = fmin(10, fmax(0, test_enemy_oxygen - card->dam_o));
     test_enemy_energy = fmin(10, fmax(0, test_enemy_energy - card->dam_e));
     test_enemy_health = fmin(10, fmax(0, test_enemy_health - card->dam_h));
+    int modifier = 1;
     if (card->effects[0] == true)
     {
-        //TODO
+        modifier = 2;
     }
     if (card->effects[1] == true)
     {
-        //TODO
+        modifier = 0;
+    }
+    thorns = card->effects[2];
+    bleeding = card->effects[3];
+    targeting = card->effects[5];
+    if (card->effects[4] == true)
+    {
+        test_enemy_health = fmin(10, fmax(0, test_enemy_health - 1));
     }
 
-    enemy_turn(player);
+    enemy_turn(player, modifier);
 }
 
-void enemy_turn(_player *player)
+void enemy_turn(_player *player, int modifier)
 {
-   player->oxygen = fmin(player->maxOxygen, fmax(0, player->oxygen - 1));
-   player->energy = fmin(player->maxEnergy, fmax(0, player->energy - 1));
-   player->health = fmin(player->maxHealth, fmax(0, player->health - 1));
+   player->oxygen = fmin(player->maxOxygen, fmax(0, player->oxygen - 1 * modifier));
+   player->energy = fmin(player->maxEnergy, fmax(0, player->energy - 1 * modifier));
+   player->health = fmin(player->maxHealth, fmax(0, player->health - 1 * modifier));
 }
 
 int check_life(_player *player)

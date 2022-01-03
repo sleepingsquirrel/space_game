@@ -25,7 +25,6 @@ room_type *load_room_types(const char *filename)
             words[i][j] = '\0';
         }
     }
-    //TODO: switch to fread
     int j,k,l;
     j = 0;
     k = 0;

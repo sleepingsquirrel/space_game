@@ -67,7 +67,6 @@ Card *loadcards(const char *filename)
             words[i][j] = '\0';
         }
     }
-    //TODO: switch to fread
     int j,k;
     j = 0;
     k = 0;
@@ -123,6 +122,14 @@ Card *loadcards(const char *filename)
     return start;
 }
 
-
-
-
+Card *find_card(char *name, Card *start)
+{
+    for (Card *current = start; current != NULL; current = current->next)
+    {
+        if (!strcmp(current->name, name)) 
+        {
+            return current;
+        }
+    }
+    return NULL;
+}

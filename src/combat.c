@@ -24,8 +24,9 @@ int main(void)
     _player *test = malloc(sizeof(_player));
     //printf("2\n");
     Card *start = loadcards("data/cards.txt");
+    _player *enemy_start = load_enemies("data/enemies.txt", start);
     //printf("3\n");
-    int i = 0;
+    /*int i = 0;
     for (i = 0; i < MAX_CARDS; i++)
     {
         test->deck[i] = NULL;
@@ -42,7 +43,8 @@ int main(void)
     }
     for (i = 0; i < 6; (&(test->health))[i] = 10, i++);
     //printf("4\n");
-    printf("%s\n", fight(test) ? "win": "loss");
+    printf("%s\n", fight(test) ? "win": "loss");*/
+    free_enemy(enemy_start);
     free_card(start);
     free(test);
 }
@@ -203,20 +205,16 @@ void shuffle(Card *c[MAX_CARDS])
 
 void print_card(Card *current)
 {
-    //printf("7.1\n");
     printf("name: %s\n", current->name);
-    //printf("7.2\n");
     for (int i = 0; i < 7; i++)
     {
         printf("%s:", name_of_var_for_print_f[i]);
         printf("%i\n", (&(current->cost_o))[i]);
     }
-    //printf("7.3\n");
     for (int i = 0; i < EFFECT_COUNT; i++)
     {
         printf("effects %i: %i\n", i,  current->effects[i] ? 1 : 0);
     }
-    //printf("7.4\n");
     printf("\n");
 }
 

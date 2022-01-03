@@ -3,7 +3,7 @@
 
 #define HEIGHT 26
 #define WIDTH 50
-#define EFFECT_COUNT 8
+#define EFFECT_COUNT 6
 #define MAX_CARDS 16
 #define foreach(type, item, list) \
     for(type * item = list; item != NULL; item = item->next)
@@ -73,30 +73,31 @@ typedef struct _Card
     struct _Card *next;
 } Card;
 
-typedef struct Enemy
-{
-    char *name;
-
-    Card *deck[MAX_CARDS];
-
-} Enemy;
-
-//player struct
+//player & enemy struct
 typedef struct _player
 {
+    //PC only
 	satalite *sat;
 	room *room;
+	unsigned int speed;
 	unsigned int gold;
+	
+	//common stats
 	unsigned int health;
 	unsigned int maxHealth;
 	unsigned int oxygen;
-	unsigned int maxOxygen;
-	unsigned int energy;
-	unsigned int maxEnergy;
-	unsigned int speed;
-	Card *deck[MAX_CARDS];
+	unsigned int maxOxygen; 
+	unsigned int energy; 
+	unsigned int maxEnergy; 
+	Card *deck[MAX_CARDS]; 
+	
+	//enemies only
+	struct _player *next;
+	char *name;
+	
     //inventory
 } _player;
+
 //function prototypes
 //functions in sat_gen.c
 satalite *sat_gen(int level, int seed, room_type *room_types);
@@ -125,10 +126,11 @@ void Kill();
 int get_command();
 void move(room **player_room, satalite *sat);
 void search(_player *player);
+
 //funcions in cards.c
 Card *loadcards(const char *filename);
 void free_card(Card *next);
-
+Card *find_card(char *name, Card *start);
 
 //functions in cards.c
 Card *loadcards(const char *filename);
@@ -146,3 +148,8 @@ void enemy_turn(_player *player, int modifier);
 //functions in room_type_load.c
 room_type *load_room_types(const char *filename);
 void free_room_types(room_type *type);
+
+//functions in enemies.c
+_player *load_enemies(const char *filename, Card *allcards);
+void free_enemy(_player *p);
+void print_enemy(_player *current)

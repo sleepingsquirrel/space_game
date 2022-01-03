@@ -1,2 +1,2 @@
 combat:
-	gcc cards.c combat.c -o combat -lm -ggdb3
+	gcc cards.c enemies.c combat.c -o combat -lm -ggdb3

@@ -3,9 +3,11 @@
 
 #define HEIGHT 26
 #define WIDTH 50
+#define MOVEH 7
+#define MOVEW 14
 #define EFFECT_COUNT 2
 #define MAX_CARDS 6
-
+#define BUFFER_SIZE 51
 //struct prototypes
 struct satalite;
 struct room;
@@ -38,7 +40,7 @@ typedef struct room
     struct room *next;
     struct door *doors;
 	room_type *type;
-	bool seen;
+	bool seen, drawn;
 } room;
 
 typedef struct satalite
@@ -82,16 +84,10 @@ typedef struct Enemy
 //player struct
 typedef struct _player
 {
+	int x, y;
 	satalite *sat;
 	room *room;
-	unsigned int gold;
-	unsigned int health;
-	unsigned int maxHealth;
-	unsigned int oxygen;
-	unsigned int maxOxygen;
-	unsigned int energy;
-	unsigned int maxEnergy;
-	unsigned int speed;
+	unsigned int gold, health, maxHealth, oxygen, maxOxygen, energy, maxEnergy, speed;
 	Card *deck[MAX_CARDS];
     //inventory
 } _player;
@@ -113,16 +109,19 @@ void free_doors(door *p);
 //functions in draw.c
 const char *color(int num);
 void draw_seen_map(satalite *sat);
+void draw_move(_player *player);
 void draw_map(uint8_t map[HEIGHT][WIDTH]);
+void draw_close_seen_rooms_to_map(_player *player, room *location, uint8_t map[MOVEH][MOVEW]);
 
 //functions in main.c
 void INThandler(int sig);
 void Kill();
 
 //functions in input.c
-int get_command();
-void move(room **player_room, satalite *sat);
+int get_command(char input[BUFFER_SIZE]);
+// void move(_player *player_room, satalite *sat);
 void search(_player *player);
+
 //funcions in cards.c
 Card *loadcards(const char *filename);
 void free_card(Card *next);

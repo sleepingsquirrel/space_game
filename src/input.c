@@ -4,9 +4,9 @@
 
 #include "main.h"
 
-void move(room **player, satalite *sat)
+void move(_player *player, satalite *sat)
 {
-	room *player_room = *player;
+	room *player_room = player->room;
 	//gen map and set it to 0
     uint8_t map[HEIGHT][WIDTH];
     for (int x = 0; x < WIDTH; x++)
@@ -83,21 +83,20 @@ void move(room **player, satalite *sat)
 		return;
 	}
 	//update player pos
-	(*player) = current->doorp;
+	player->room = current->doorp;
 	//see room
-	(*player)->seen = true;
+	player->room->seen = true;
+
+	player->x = player->room->x+1;
+	player->y = player->room->y+1;
 	//TODO: add random encounters
 
 	printf("moved suceccfully\n");
 }
 
 int last_command = 0;
-int get_command()
+int get_command(char input[BUFFER_SIZE])
 {
-    char input[51];
-	//get input
-	printf(">");
-	fgets(input, 50, stdin);
 	//clear screen
 	printf("\033c");
 	//make input lowercase

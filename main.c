@@ -7,16 +7,23 @@
 #include <time.h>
 #include <signal.h>
 
+#ifdef WIN64
+	#include <conio.h>
+#else
+	#include <curses.h>
+#endif
+
 #include "src/main.h"
 
 struct _player *player;
 room_type *room_type_start;
+WINDOW * mainwin;
 
 int main(int argc, char *argv[])
 {
+	mainwin = initscr();
     player = malloc(sizeof(_player));
     room_type_start = load_room_types("src/data/room_types.txt");
-	for (room_type *current = room_type_start; current != NULL; current = current->next);
     signal(SIGINT, INThandler);
     //clear screen
 	printf("\033c");
@@ -25,19 +32,44 @@ int main(int argc, char *argv[])
 	player->sat = sat_gen(fmax(atoi(argv[1] ? argv[1] : "0"), 1), time(0), room_type_start);
     //set the room that the player is in to the starting room
     player->room = player->sat->starting_room;
+	player->x = player->room->x + player->room->w;
+	player->y = player->room->y + player->room->h;
     //make that room visable
    	player->room->seen = true;
-    int i;
     FILE *file;
     char buffer;
     bool running = true;
-	char input[5];
-	int inp;
+	char input[BUFFER_SIZE];
     printf("Type \"help\" for help\n");
     while (running)
     {
     	//get input
-		switch(get_command())
+		draw_move(player);
+		memset(&(input[0]), 0, sizeof(input));
+		printf(">");
+		refresh();
+		for (int i = 0; ; i++)
+		{
+		 	buffer = getch();
+			if (buffer == '\033')
+			{
+				getch();
+				printf("%c\n", getch());
+			}
+			if (buffer == '\b')
+			{
+				i -= 2;
+			}
+			if (i < BUFFER_SIZE - 1)
+			{
+				input[i] = buffer;
+				if (input[i] == '\n')
+				{
+					input[i + 1] = '\0';
+				}
+			}
+		}
+		switch(get_command(input))
 		{
 			//process commands
 			case 0://help
@@ -55,7 +87,7 @@ int main(int argc, char *argv[])
 				draw_seen_map(player->sat);
 				break;
 			case 3://move
-				move(&player->room, player->sat);
+				// move(player, player->sat);
 				break;
 			case 4://devmap
 				draw_map(player->sat->map);
@@ -63,14 +95,20 @@ int main(int argc, char *argv[])
 			case 5://search
 				search(player);
 				break;
-			case 6:
+			case 6://new
+				char intput[5];
+				int inp;
 				printf("\nGive Size: ");
-				fgets(input, 5, stdin);
-				inp = atoi(input);
+				fgets(intput, 5, stdin);
+				inp = atoi(intput);
 			    free_sat(player->sat);
 			    player->sat = sat_gen(fmin(inp > 1 ? inp : 1, 50), time(0), room_type_start);
 			    printf("%i\n", player->sat->rooms_num);
 			    draw_map(player->sat->map);
+				player->room = player->sat->starting_room;
+				player->x = player->room->x + player->room->w;
+				player->y = player->room->y + player->room->h;
+				player->room->seen = true;
 			    break;
 		}
     }
@@ -92,5 +130,8 @@ void Kill()
     free_room_types(room_type_start);
     free(player);
     printf("Things have been freed\n");
+	delwin(mainwin);
+	endwin();
+	refresh();
     exit(0);
 }

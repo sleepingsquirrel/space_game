@@ -236,9 +236,7 @@ room_type *rand_room_type(room_type *start, satalite *sat)
     //random number between 1 & 100
 	int8_t randnum = rand() % 100;
 	//for each room_type
-	// 	for (room_type *current = start; current != NULL; current = current->next)
-	room_type *current;
-	foreach (room_type, current, start)
+	for (room_type *current = start; current != NULL; current = current->next)
 	{
 		randnum -= current->probabilaty;
 		if (randnum < 0)

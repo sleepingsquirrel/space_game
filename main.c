@@ -55,7 +55,7 @@ int main(int argc, char *argv[])
 				draw_seen_map(player->sat);
 				break;
 			case 3://move
-				move(&player->room, player->sat);
+				move(player, player->sat);
 				break;
 			case 4://devmap
 				draw_map(player->sat->map);
@@ -71,6 +71,8 @@ int main(int argc, char *argv[])
 			    player->sat = sat_gen(fmin(inp > 1 ? inp : 1, 50), time(0), room_type_start);
 			    printf("%i\n", player->sat->rooms_num);
 			    draw_map(player->sat->map);
+				player->room = player->sat->starting_room;
+				player->room->seen = true;
 			    break;
 		}
     }

@@ -4,54 +4,50 @@
 
 #include "main.h"
 
-void move(room **player, satalite *sat)
+void move(_player *player, satalite *sat)
 {
-	room *player_room = *player;
 	//gen map and set it to 0
     uint8_t map[HEIGHT][WIDTH];
     for (int x = 0; x < WIDTH; x++)
 		for (int y = 0; y < HEIGHT; y++)
 			map[y][x] = 0;
 	//draw the room the player is in to the map
-    for (int rx = 0; rx < player_room->w; rx++)
-		for (int ry = 0; ry < player_room->h; ry++)
+	for (room *current = player->sat->rooms; current != NULL; current = current->next)
+		if (current->seen)
 		{
-			map[ry + player_room->y][rx + player_room->x] = player_room->data;
+		    for (int rx = 0; rx < current->w; rx++)
+				for (int ry = 0; ry < current->h; ry++)
+				{
+					map[ry + current->y][rx + current->x] = current->data;
+				}
+			//draw rooms
+		    for (door *current_door = current->doors; current_door != NULL; current_door = current_door->next)
+		    {
+		        map[current_door->y][current_door->x] = current_door->doorp->data;
+		    }
 		}
-	//draw rooms
-    for (door *current = player_room->doors; current != NULL; current = current->next)
-    {
-        map[current->y][current->x] = current->doorp->data;
-    }
 	//print out map but just the part we have drawn
-    int index = 1;
     printf("\n");
-    for (int ry = 0; ry  < player_room->h + 2; ry++)
+    for (int ry = 0; ry  < player->room->h + MOVEH; ry++)
     {
     	printf("  ");
-        for (int rx = 0; rx < player_room->w + 2; rx++)
+        for (int rx = 0; rx < player->room->w + MOVEW; rx++)
+		{
 			//test if the current position is the data of the players position or 0
-            if (map[player_room->y-1 + ry][player_room->x-1 + rx] == player_room->data ||
-                map[player_room->y-1 + ry][player_room->x-1 + rx] == 0)
-            {
 				//print color without index
-            	printf("%s  ", color(map[player_room->y-1 + ry][player_room->x-1 + rx]));
-            }
-            else
-            {
+            	printf("%s  ", color(map[player->room->y-(MOVEH / 2) + ry][player->room->x-(MOVEW / 2) + rx]));
 				//generate index
-                for (door *current = player_room->doors; current != NULL; current = current->next, index++)
-                    if (current->x == player_room->x-1 + rx && current->y == player_room->y-1 + ry)
+				int i = 1;
+                for (door *current = player->room->doors; current != NULL; current = current->next, i++)
+                    if (current->x == player->room->x-(MOVEW / 2) + rx && current->y == player->room->y-(MOVEH / 2) + ry)
                     {
+						printf("\b\b%i ", i);
                         break;
                     }
 				//print color with index
-                printf("%s%i ", color(map[player_room->y-1 + ry][player_room->x-1 + rx]), index);
-				//reset index
-				index = 1;
-            }
-        printf("%s\n", color(0));
         }
+		printf("%s\n", color(0));
+	}
 	//get input
 	printf("\nmove to>");
 	char input[3];
@@ -74,7 +70,7 @@ void move(room **player, satalite *sat)
 		return;
 	}
 	//get the specified room
-	door *current = player_room->doors;
+	door *current = player->room->doors;
 	for (int i = 0; current != NULL && i+1 < inp; current = current->next, i++);
 	//prevent segmentation fault
 	if (current == NULL)
@@ -83,12 +79,12 @@ void move(room **player, satalite *sat)
 		return;
 	}
 	//update player pos
-	(*player) = current->doorp;
+	player->room = current->doorp;
 	//see room
-	(*player)->seen = true;
+	player->room->seen = true;
 	//TODO: add random encounters
 
-	printf("moved suceccfully\n");
+	printf("enterd %s\n");
 }
 
 int last_command = 0;

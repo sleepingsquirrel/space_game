@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
 	for (room_type *current = room_type_start; current != NULL; current = current->next);
     signal(SIGINT, INThandler);
     //clear screen
-	printf("\033c");
+	// printf("\033c");
 	player->gold = 0;
     printf("Creating satalite\n");
 	player->sat = sat_gen(fmax(atoi(argv[1] ? argv[1] : "0"), 1), time(0), room_type_start);
@@ -55,7 +55,7 @@ int main(int argc, char *argv[])
 				draw_seen_map(player->sat);
 				break;
 			case 3://move
-				move(&player->room, player->sat);
+				move(player, player->sat);
 				break;
 			case 4://devmap
 				draw_map(player->sat->map);
@@ -71,6 +71,8 @@ int main(int argc, char *argv[])
 			    player->sat = sat_gen(fmin(inp > 1 ? inp : 1, 50), time(0), room_type_start);
 			    printf("%i\n", player->sat->rooms_num);
 			    draw_map(player->sat->map);
+				player->room = player->sat->starting_room;
+				player->room->seen = true;
 			    break;
 		}
     }

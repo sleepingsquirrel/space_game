@@ -5,8 +5,8 @@
 #define WIDTH 50
 #define EFFECT_COUNT 6
 #define MAX_CARDS 16
-#define foreach(type, item, list) \
-    for(type * item = list; item != NULL; item = item->next)
+#define MOVEW 6
+#define MOVEH 4
 
 //struct prototypes
 struct satalite;
@@ -81,20 +81,20 @@ typedef struct _player
 	room *room;
 	unsigned int speed;
 	unsigned int gold;
-	
+
 	//common stats
 	unsigned int health;
 	unsigned int maxHealth;
 	unsigned int oxygen;
-	unsigned int maxOxygen; 
-	unsigned int energy; 
-	unsigned int maxEnergy; 
-	Card *deck[MAX_CARDS]; 
-	
+	unsigned int maxOxygen;
+	unsigned int energy;
+	unsigned int maxEnergy;
+	Card *deck[MAX_CARDS];
+
 	//enemies only
 	struct _player *next;
 	char *name;
-	
+
     //inventory
 } _player;
 
@@ -124,7 +124,7 @@ void Kill();
 
 //functions in input.c
 int get_command();
-void move(room **player_room, satalite *sat);
+void move(_player *player, satalite *sat);
 void search(_player *player);
 
 //funcions in cards.c

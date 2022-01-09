@@ -6,26 +6,6 @@
 
 #include "main.h"
 
-// const char *name_of_var_for_print_f[] = {"cost_o", "cost_e", "cost_h", "targets", "dam_o", "dam_e", "dam_h"};
-
-// int main(void)
-// {
-//     Card *start = loadcards("data/testcards.txt");
-//     for (Card *current = start; current != NULL; current = current->next)
-//     {
-//         printf("name: %s\n", current->name);
-//         for (int i = 0; i < 7; i++)
-//             printf("%s: %i\n", name_of_var_for_print_f[i], (&(current->cost_o))[i]);
-//         for (int i = 0; i < EFFECT_COUNT; i++)
-//         {
-//             printf("effects %i: %i\n", i,  current->effects[i] ? 1 : 0);
-//         }
-//         printf("this %p -> next %p\n", current, current->next);
-//         printf("\n");
-//     }
-//     free_card(start);
-// }
-
 void free_card(Card *p)
 {
     //Recursively calls this function for every card in the list

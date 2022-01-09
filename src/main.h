@@ -139,11 +139,11 @@ void free_card(Card *next);
 //functions in combat.c
 void shuffle(Card *c[MAX_CARDS]);
 void print_card(Card *current);
-bool fight(_player *player);
+bool fight(_player *player, _player *enemy);
 void quit();
-void play_card(Card *card, _player *player);
-int check_life(_player *player);
-void enemy_turn(_player *player, int modifier);
+void play_card(Card *card, Card *enemy_card, _player *player, _player *enemy);
+int check_life(_player *player, _player *enemy);
+void enemy_turn(Card *enemy_card, _player *player, _player *enemy, int modifier);
 
 //functions in room_type_load.c
 room_type *load_room_types(const char *filename);
@@ -152,4 +152,4 @@ void free_room_types(room_type *type);
 //functions in enemies.c
 _player *load_enemies(const char *filename, Card *allcards);
 void free_enemy(_player *p);
-void print_enemy(_player *current)
+void print_enemy(_player *current);

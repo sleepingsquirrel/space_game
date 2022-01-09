@@ -83,8 +83,7 @@ _player *load_enemies(const char *filename, Card *allcards)
                 }
             }
             Card *card;
-            int z = 0;
-            for (int h = 0; cardnames[h][0] != '\0'; h++, z++)
+            for (int h = 0; cardnames[h][0] != '\0'; h++)
             {
                 card = find_card(cardnames[h], allcards);
                 if (card != NULL)
@@ -93,7 +92,7 @@ _player *load_enemies(const char *filename, Card *allcards)
                 }
                 else
                 {
-                    z--;
+                    current->deck[h] = NULL;
                 }
             }
             //Places current at the front of the linked list

@@ -3,7 +3,7 @@ Card:
 room_types:
 {name};{id};{min_per_sat};{probabilaty};{description (, , , , , ,)};
 Enemy:
-{name};{maxHealth};{maxOxygen};{maxEnergy};{
+{name};{maxHealth};{maxOxygen};{maxEnergy};{Card 1},{Card 2}, ... {Card 12}
 
 Effect list:
 0. Vulnerable

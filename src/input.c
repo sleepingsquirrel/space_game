@@ -84,7 +84,8 @@ void move(_player *player, satalite *sat)
 	player->room->seen = true;
 	//TODO: add random encounters
 
-	printf("enterd %s\n");
+	printf("enterd %s\n", player->room->type->name);
+	printf("You enter %s\n", player->room->type->descriptions[0]);
 }
 
 int last_command = 0;

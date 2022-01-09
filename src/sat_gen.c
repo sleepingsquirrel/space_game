@@ -234,10 +234,16 @@ void gen_room_types(satalite *sat)
 room_type *rand_room_type(room_type *start, satalite *sat)
 {
     //random number between 1 & 100
-	int8_t randnum = rand() % 100;
+	int probabilaty = 0;
+	for (room_type *current = start; current != NULL; current = current->next)
+	{
+		probabilaty += current->probabilaty;
+	}
+	int8_t randnum = rand() % probabilaty;
 	//for each room_type
 	for (room_type *current = start; current != NULL; current = current->next)
 	{
+		// printf("%s\n", current->name);
 		randnum -= current->probabilaty;
 		if (randnum < 0)
 		{

@@ -1,16 +1,14 @@
 To Do:
 Finish room types
-Looting system
-Player Character
-Item/chip
+Item
 Inventory System
-Enemies
-Multiple enemy combat
-Campaign stuff
-Saving & Loading
-High Scores
+
 Overall polish
-Card effects
+
+maybe
+High Scores
+
+
 
 Currently working on:
 Room types

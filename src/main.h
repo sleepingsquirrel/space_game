@@ -4,14 +4,16 @@
 #define HEIGHT 26
 #define WIDTH 50
 #define EFFECT_COUNT 6
+#define ITEM_EFFECT_COUNT 10
 #define MAX_CARDS 16
 #define MOVEW 6
 #define MOVEH 4
-
+#define ITEMS 6
 //struct prototypes
 struct satalite;
 struct room;
 struct door;
+struct item;
 
 typedef struct room_type
 {
@@ -62,8 +64,8 @@ typedef struct _Card
     int cost_o;
     int cost_e;
     int cost_h;
-    //amount of targets
-    int targets;
+    //relative power level of card
+    int rarity;
     //damage in oxygen, energy, health
     int dam_o;
     int dam_e;
@@ -72,6 +74,16 @@ typedef struct _Card
     bool effects[EFFECT_COUNT];
     struct _Card *next;
 } Card;
+
+typedef struct item
+{
+    char *name;
+    int uses, level, type;
+    int o, h, e, s;
+    bool infinite, combat;
+    bool effect[ITEM_EFFECT_COUNT];
+    Card *spell;
+} item;
 
 //player & enemy struct
 typedef struct _player
@@ -90,14 +102,13 @@ typedef struct _player
 	unsigned int energy;
 	unsigned int maxEnergy;
 	Card *deck[MAX_CARDS];
-
+    item *items[ITEMS];
 	//enemies only
 	struct _player *next;
 	char *name;
 
     //inventory
 } _player;
-
 //function prototypes
 //functions in sat_gen.c
 satalite *sat_gen(int level, int seed, room_type *room_types);
@@ -121,6 +132,7 @@ void draw_map(uint8_t map[HEIGHT][WIDTH]);
 //functions in main.c
 void INThandler(int sig);
 void Kill();
+Card *getCards();
 
 //functions in input.c
 int get_command();
@@ -130,11 +142,7 @@ void search(_player *player);
 //funcions in cards.c
 Card *loadcards(const char *filename);
 void free_card(Card *next);
-Card *find_card(char *name, Card *start);
-
-//functions in cards.c
-Card *loadcards(const char *filename);
-void free_card(Card *next);
+Card *find_card(char *name);
 
 //functions in combat.c
 void shuffle(Card *c[MAX_CARDS]);
@@ -144,6 +152,7 @@ void quit();
 void play_card(Card *card, Card *enemy_card, _player *player, _player *enemy);
 int check_life(_player *player, _player *enemy);
 void enemy_turn(Card *enemy_card, _player *player, _player *enemy, int modifier);
+int strcasecmp(const char *s1, const char *s2);
 
 //functions in room_type_load.c
 room_type *load_room_types(const char *filename);
@@ -153,3 +162,10 @@ void free_room_types(room_type *type);
 _player *load_enemies(const char *filename, Card *allcards);
 void free_enemy(_player *p);
 void print_enemy(_player *current);
+
+//functions in items.c
+item *gen_item(_player *player);
+char *gen_item_name(item *input);
+char *gen_potion_name(item *current)
+void gen_loot(_player *player, Card *start);
+void free_item(item *current);

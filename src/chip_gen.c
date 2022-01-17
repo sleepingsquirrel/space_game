@@ -12,7 +12,7 @@ int digcheck(char* input)
     //Returns 0 on fail
     for (int i = 0; i < strlen(input); i++)
     {
-        if (input[i] < '0' || input[i] > '9')u
+        if (input[i] < '0' || input[i] > '9')
         {
             return 0;
         }
@@ -50,9 +50,8 @@ int main(int argc, char* argv[]){
     if (powermod <= 50) {
         int numberofstats = rand() % 4;
         for (int i = 0; i < numberofstats; i++){
-            genchip.stats[(rand() % 4)] += (((float)pow(level, 2)) / 10.0) * powermod / 10;
+            genchip.stats[(rand() % 4)] += (((float)pow(level, 2)) * powermod) / 10;
         }
-
     }
     printf("Powermod: %i\n", powermod);
     printf("Speed: %i\n", genchip.stats[0]);

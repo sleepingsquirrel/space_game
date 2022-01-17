@@ -11,10 +11,12 @@
 
 struct _player *player;
 room_type *room_type_start;
+static Card *card_start;
 
 int main(int argc, char *argv[])
 {
     player = malloc(sizeof(_player));
+    card_start = loadcards("src/data/cards.txt");
     room_type_start = load_room_types("src/data/room_types.txt");
 	for (room_type *current = room_type_start; current != NULL; current = current->next);
     signal(SIGINT, INThandler);
@@ -95,4 +97,9 @@ void Kill()
     free(player);
     printf("Things have been freed\n");
     exit(0);
+}
+
+Card *getCards()
+{
+	return card_start
 }

@@ -3,3 +3,6 @@ space_game: main.c src/sat_gen/sat_gen.c src/gameplay/draw.c src/gameplay/input.
 
 combat:
 	gcc src/gameplay/cards.c src/gameplay/enemies.c src/gameplay/combat.c -o combat -lm -ggdb3
+
+all:
+	gcc src/gameplay/*.c src/sat_gen/*.c main.c -o sprogue -lm -ggdb3

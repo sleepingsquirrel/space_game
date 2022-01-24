@@ -27,18 +27,8 @@ Commands:
             m, mv
         Function:
             Lets you select witch room to move into
-    Devmap:
-        Aliases:
-            dm
-        Function:
-            Prints out all rooms
     Search:
         Aliases:
             s, see, inspect, room
         Function:
             Prints out the type of room you are in
-    New:
-        Aliases:
-            n
-        Function:
-            Creates a new satalite

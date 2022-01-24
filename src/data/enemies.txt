@@ -1,0 +1,10 @@
+Battlebot Mk3;1000;6;12;Electric Jab,Electric Jab,Homing Missile,Greater Energize,Oxygen Drain,Greater Oxygen Drain,Greater Energize,Greater Energize,;
+Shiftite;10;10;10;Amorphous Attack,Amorphous Attack,Amorphous Attack,Water Conversion,Blood Spear,Missile Swarm,Missile Swarm,;
+Mutant Plant;10;1000;8;Lunge,Lunge,Puncture,Photosynthesis,Photosynthesis,Overgrowth,;
+Battlebot Mk2;1000;6;12;Energize,Jab,Electric Jab,Missile Swarm,Greater Energize,Electric Jab,Electric Jab,;
+Vampire;6;5;10;Wound,Slash,Heartbind,Puncture,Puncture,Blood Spear,Blood Spear,Heal,;
+Space Pirate;4;10;8;Jab,Kick,Dodge,Lunge,Block,Cautious Attack,Reckless Jab,Focus Strike,Grenade,Grenade,;
+Battlebot Mk1;1000;4;8;Energize,Missile,Jab,Ready Shot,Jab,Jab,Lunge,Zap,Puncture,Missile,;
+Sniper;5;5;4;Ready Shot,Shield,Focus Strike,Focus Strike,True Strike,True Strike,Homing Missile, Fumble,;
+Undead;3;3;6;Lunge,Lunge,Puncture,Shatter,Reckless Jab,Fumble,;
+Ploofian;3;15;10;Oxygen Drain,Oxygen Drain,Puncture,Greater Oxygen Drain,Water Conversion,Puncture,;

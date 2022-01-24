@@ -373,7 +373,9 @@ void room_effects(_player *player)
         case 2:
             if (player->sat->plotted)
             {
-                printf("The escape pods are ready to leave, are you?\ny or n>");
+              printf("YOU WIN!");
+              Kill();
+                /*printf("The escape pods are ready to leave, are you?\ny or n>");
                 char c = fgetc(stdin);
                 if (c == 'y')
                 {
@@ -385,14 +387,14 @@ void room_effects(_player *player)
                     player->room = player->sat->starting_room;
                     player->room->seen = true;
                     printf("As you leave your pod you enter %s\n", player->room->type->descriptions[0]);
-                }
+                }*/
             }
             printf("The escape pods are turned off\n");
             break;
         case 4:
             if (!player->room->used)
             {
-                printf("Choose one\n1: Heal\n2: Get card\n");//3: Remove card\n>"*/);
+                printf("Choose one\n1: Heal\n2: Get card\n>");//3: Remove card\n>"*/);
                 char c[10];
                 fgets(c, 10, stdin);
                 switch (c[0])

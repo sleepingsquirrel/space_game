@@ -83,14 +83,17 @@ void move(_player *player, satalite *sat)
 	//update player pos
 	player->room = current->doorp;
 	//see room
-	player->room->seen = true;
 	//TODO: add random encounters
 	bool chance = (bool) (rand() % 2);
-	if (chance)
+	if (!player->room->seen)
 	{
-		if(!encounter(player))
+		player->room->seen = true;
+		if (chance)
 		{
-			Kill();
+			if(!encounter(player))
+			{
+				Kill();
+			}
 		}
 	}
 	room_effects(player);

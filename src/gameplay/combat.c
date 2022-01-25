@@ -52,6 +52,12 @@ bool enemy_targeting = false;
 
 bool fight(_player *player, _player *enemy)
 {
+   player_thorns = false;
+   player_bleeding = false;
+   player_targeting = false;
+   enemy_thorns = false;
+   enemy_bleeding = false;
+   enemy_targeting = false;
     //Initializes draw pile and sets it equal to the player's deck, randomly ordered
     Card *draw_pile[MAX_CARDS];
     memset(&draw_pile[0], 0, sizeof(draw_pile));

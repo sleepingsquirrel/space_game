@@ -106,6 +106,7 @@ void Kill()
 	printf("|   GAME   OVER  |\n");
 	printf("|                |\n");
 	printf("------------------\n\n");
+	printf("points: %i\n", player->gold);
     //printf("\nFreeing things\n");
     free_sat(player->sat);
     free_room_types(room_type_start);

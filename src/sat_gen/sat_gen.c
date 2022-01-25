@@ -373,21 +373,23 @@ void room_effects(_player *player)
         case 2:
             if (player->sat->plotted)
             {
-              printf("YOU WIN!");
-              Kill();
-                /*printf("The escape pods are ready to leave, are you?\ny or n>");
-                char c = fgetc(stdin);
-                if (c == 'y')
-                {
-                    printf("Leaving for %s\n", player->sat->next->name);
-                    satalite *temp = player->sat->next;
-                    free_sat(player->sat);
-                    player->sat = player->sat->next;
-                    printf("Entering %s\n", player->sat->next->name);
-                    player->room = player->sat->starting_room;
-                    player->room->seen = true;
-                    printf("As you leave your pod you enter %s\n", player->room->type->descriptions[0]);
-                }*/
+				printf("The escape pods are ready to leave, are you?\ny or n>");
+                char c[10];
+                fgets(c, 10, stdin);
+				// printf("%c\n", c[0]);
+                switch (c[0])
+				{
+					case 'y':
+						printf("Leaving for %s\n", player->sat->next->name);
+						satalite *temp = player->sat->next;
+						free_sat(player->sat);
+						player->sat = temp;
+						printf("Entering %s\n", player->sat->name);
+						player->room = player->sat->starting_room;
+						player->room->seen = true;
+						// printf("As you leave your pod you enter %s\n", player->room->type->descriptions[0]);
+						return;
+				}
             }
             printf("The escape pods are turned off\n");
             break;

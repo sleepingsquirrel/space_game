@@ -1,2 +1,2 @@
 language = "bash"
-run = "make -B all\n./sprogue"
+run = "./sprogue"

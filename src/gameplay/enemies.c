@@ -155,6 +155,7 @@ void print_enemy(_player *current)
 bool encounter(_player *player)
 {
     int x = player->sat->level;
+    printf("%i", x);
     int random;
     int sum = 0;
     for (int i = 0; i < x; sum += rand() % 2, i++);
@@ -164,19 +165,19 @@ bool encounter(_player *player)
     switch (player->sat->factionID)
     {
         case 0:
-            for (int i = 0; i < 10; preferences[i] = enemy_pref_usa[i], i++);
+            for (int i = 0; i < 10; preferences[10 - i] = enemy_pref_usa[i], i++);
             break;
         case 1:
-            for (int i = 0; i < 10; preferences[i] = enemy_pref_un[i], i++);
+            for (int i = 0; i < 10; preferences[10 - i] = enemy_pref_un[i], i++);
             break;
         case 2:
-            for (int i = 0; i < 10; preferences[i] = enemy_pref_c[i], i++);
+            for (int i = 0; i < 10; preferences[10 - i] = enemy_pref_c[i], i++);
             break;
         case 3:
-            for (int i = 0; i < 10; preferences[i] = enemy_pref_s[i], i++);
+            for (int i = 0; i < 10; preferences[10 - i] = enemy_pref_s[i], i++);
             break;
         case 4:
-            for (int i = 0; i < 10; preferences[i] = enemy_pref_a[i], i++);
+            for (int i = 0; i < 10; preferences[10 - i] = enemy_pref_a[i], i++);
             break;
     }
     int q = 0;

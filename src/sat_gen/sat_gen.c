@@ -388,6 +388,9 @@ void room_effects(_player *player)
 						printf("Entering %s\n", player->sat->name);
 						player->room = player->sat->starting_room;
 						player->room->seen = true;
+						player->oxygen = player->maxOxygen;
+						player->health = player->maxHealth;
+						player->energy = player->maxEnergy;
 						// printf("As you leave your pod you enter %s\n", player->room->type->descriptions[0]);
 						return;
 				}
@@ -397,13 +400,14 @@ void room_effects(_player *player)
         case 4:
             if (!player->room->used)
             {
-                printf("Choose one\n1: Heal\n2: Get card\n3: Remove card\n>");
+                printf("Choose one\n1: Heal\n2: Get card\n>");//\n3: Remove card\n>");
                 char c[10];
                 fgets(c, 10, stdin);
                 switch (c[0])
                 {
                     case '1':
                         player->health += 5;
+						player->oxygen += 2;
                         player->health = fmin(player->health, player->maxHealth);
                         player->room->used = true;
                         break;
@@ -423,31 +427,31 @@ void room_effects(_player *player)
                         printf("Your ineventory is full\n");
                         room_effects(player);
                         break;
-                    case '3':
-                        input = malloc(20);
-                        shuffle(player->deck);
-                        for
-                        printf("Which card would you like to remove from your deck?\n1. %s\n2. %s\n3. %s\n", removal[0]->name, removal[1]->name, removal[2]->name);
-                        fgets(input, 15, stdin);
-    	                for (b = 0; input[b] != '\n'; b++);
-    	                input[b] = '\0';
-    	                for (int i = 0; i < 3; i++)
-    	                {
-    	                    if (atoi(input) == i + 1)
-    	                    {
-    	                        switch (i)
-    	                        {
-    	                            case 2:
-    	                                player->deck[q - 2] = player->deck[q - 1];
-    	                            case 1:
-    	                                player->deck[q - 1] = player->deck[q];
-    	                            case 0:
-    	                                player->deck[q] = NULL;
-    	                                break;
-    	                        }
-    	                    }
-    	                }
-                        break;
+                    // case '3':
+                    //     input = malloc(20);
+                    //     shuffle(player->deck);
+                    //     for
+                    //     printf("Which card would you like to remove from your deck?\n1. %s\n2. %s\n3. %s\n", removal[0]->name, removal[1]->name, removal[2]->name);
+                    //     fgets(input, 15, stdin);
+    	            //     for (b = 0; input[b] != '\n'; b++);
+    	            //     input[b] = '\0';
+    	            //     for (int i = 0; i < 3; i++)
+    	            //     {
+    	            //         if (atoi(input) == i + 1)
+    	            //         {
+    	            //             switch (i)
+    	            //             {
+    	            //                 case 2:
+    	            //                     player->deck[q - 2] = player->deck[q - 1];
+    	            //                 case 1:
+    	            //                     player->deck[q - 1] = player->deck[q];
+    	            //                 case 0:
+    	            //                     player->deck[q] = NULL;
+    	            //                     break;
+    	            //             }
+    	            //         }
+    	            //     }
+                    //     break;
                 }
             }
             else

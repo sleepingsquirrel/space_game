@@ -121,7 +121,8 @@ Card *random_card()
     int q = 0;
     for (Card *current = start; current != NULL; q++, current = current->next);
     int random = rand() % q;
+    int i = 0;
     Card *current;
-    for (current = start; q; q--, current = current->next);
+    for (current = start; i < random; i++ , current = current->next);
     return current;
 }

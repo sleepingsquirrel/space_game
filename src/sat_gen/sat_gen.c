@@ -353,7 +353,8 @@ void room_effects(_player *player)
     int q;
     int b;
     char *input = NULL;
-    Card *removal[]  = {NULL, NULL, NULL};
+    int removal[3];
+    bool isnulls[MAX_CARDS];
     switch (player->room->type->id)
     {
         case 0:
@@ -396,7 +397,7 @@ void room_effects(_player *player)
         case 4:
             if (!player->room->used)
             {
-                printf("Choose one\n1: Heal\n2: Get card\n>");//3: Remove card\n>"*/);
+                printf("Choose one\n1: Heal\n2: Get card\n3: Remove card\n>");
                 char c[10];
                 fgets(c, 10, stdin);
                 switch (c[0])
@@ -415,7 +416,7 @@ void room_effects(_player *player)
                             if (player->deck[i] == NULL)
                             {
                                 player->deck[i] = card;
-                                printf("Gained: %s", card->name);
+                                printf("Gained: %s\n", card->name);
                                 player->room->used = true;
                                 return;
                             }
@@ -425,10 +426,7 @@ void room_effects(_player *player)
                     case '3':
                         input = malloc(20);
                         shuffle(player->deck);
-                        for (q = 0; player->deck[q] != NULL; q++);
-                        removal[0] = player->deck[q];
-                        removal[1] = player->deck[q - 1];
-                        removal[2] = player->deck[q - 2];
+                        for
                         printf("Which card would you like to remove from your deck?\n1. %s\n2. %s\n3. %s\n", removal[0]->name, removal[1]->name, removal[2]->name);
                         fgets(input, 15, stdin);
     	                for (b = 0; input[b] != '\n'; b++);
